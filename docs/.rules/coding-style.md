@@ -20,11 +20,17 @@ This repo is an Astro + TypeScript public brand website for STDS. Optimize for c
 
 ## Backend API Boundary
 
-Use a narrow public API client boundary for the brand backend endpoints:
+Use a narrow public API client boundary for the core backend public readonly
+brand endpoints:
 
-- `GET /api/v1/brand/profile`
-- `GET /api/v1/brand/faqs`
-- `GET /api/v1/properties/availability`
+- `GET /api/v1/public/brand/profile`
+- `GET /api/v1/public/brand/faqs`
+- `GET /api/v1/public/properties/availability`
+
+Production brand content should be fetched at Astro build time from
+`BRAND_API_BASE_URL`. Real users should not trigger runtime API calls to compose
+the core homepage content. The current `/mock/*.json` browser fetches are a
+temporary pre-integration scaffold, not the target staging architecture.
 
 Centralize base URL handling, request helpers, response typing, and error mapping in a small API utility. Pages should consume typed functions, not hand-roll `fetch` options. Normal rendering should fail gracefully with useful public content behavior; do not expose internal backend errors to visitors.
 
@@ -33,7 +39,7 @@ Centralize base URL handling, request helpers, response typing, and error mappin
 - Keep environment variable usage explicit and documented before relying on it.
 - Distinguish build-time public config from runtime server config when Astro modes require it.
 - Do not hard-code localhost, staging, production, Firebase Hosting, or Cloud Run URLs inside page code.
-- Keep API base path handling compatible with hosting rewrites such as `/brand-api/**`.
+- Do not depend on Firebase Hosting rewrites, a runtime backend proxy, `stds_brand_backend`, or a brand thin Cloud Run service.
 - Never place secrets in frontend-exposed environment variables or generated static output.
 - When a new environment variable is added, update architecture or deployment docs in the same change.
 

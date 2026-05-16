@@ -16,7 +16,7 @@ It pulls data at build time from core backend public read-only endpoints that ex
 The files in `reference/` are **design references**, written as a static HTML+CSS+vanilla-JS prototype. They are NOT meant to be copy-pasted into the target codebase. The task is to **recreate the design in Astro** using the existing patterns of the chosen target stack and integration with the public Brand API.
 
 - `reference/index.html` — full design source. Markup, styles, and JavaScript renderers all live in one file for easy inspection.
-- `reference/mock/*.json` — example payloads matching the public Brand API response shapes. Use these for local development before the backend is live.
+- `reference/mock/*.json` — example payloads matching the public Brand API response shapes. Use these only for the standalone design reference or temporary pre-integration scaffolds, not production integration.
 
 ---
 

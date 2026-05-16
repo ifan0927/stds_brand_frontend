@@ -34,6 +34,8 @@ After deploying `staging`, verify:
 - Static output and assets are reachable, including CSS, JS, images, and generated Astro assets.
 - Required Cloudflare Pages environment variables are documented, configured for
   the target environment, and do not expose secrets in frontend output.
+- `BRAND_API_BASE_URL` is configured as the build-time API base URL for the
+  target core backend public API.
 - Build-time data fetch succeeds against the core backend public brand
   endpoints.
 

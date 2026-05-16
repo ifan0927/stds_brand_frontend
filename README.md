@@ -32,8 +32,9 @@ stay static-first, SEO-friendly, and simple to deploy.
 
 The repository is in its early Astro scaffold phase. Governance docs, design
 references, package scripts, and the first static homepage structure are present;
-the next integration slice should replace mock browser fetches with build-time
-API fetches.
+the current `/mock/*.json` browser fetches are a temporary pre-integration
+scaffold. The next integration slice should replace them with build-time API
+fetches from `BRAND_API_BASE_URL`.
 
 ## API Boundary
 
@@ -50,6 +51,11 @@ access.
 
 The brand site does not include booking, reservation, contact form submission,
 CMS, realtime availability, or any write API.
+
+Production brand data is fetched at Astro build time. Cloudflare Pages should
+provide `BRAND_API_BASE_URL` as the build-time API base URL for local, preview,
+staging, and production builds. Do not hardcode local, staging, production,
+Firebase, or Cloud Run URLs.
 
 ## Engineering Focus
 

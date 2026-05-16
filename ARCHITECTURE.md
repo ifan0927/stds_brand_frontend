@@ -46,8 +46,8 @@ behavior. Data ownership stays in the backend and its approved brand-facing
 views.
 
 Frontend API code should be a thin typed build-time wrapper around these public
-endpoints. Avoid generated clients until the backend publishes an OpenAPI
-contract.
+endpoints. Do not introduce a generated client in the current documentation
+alignment stage; a later issue can evaluate one if it becomes useful.
 
 ## Suggested Source Layout
 
@@ -95,7 +95,8 @@ Expected shape:
 - A protected Cloudflare Pages deploy hook can trigger scheduled rebuilds.
 
 No Firebase Hosting brand rewrite or runtime backend proxy is required for the
-active architecture.
+active architecture. The brand site does not depend on `stds_brand_backend` or a
+brand thin Cloud Run service.
 
 ## Configuration Boundary
 
@@ -111,6 +112,9 @@ Do not rely on hard-coded local URLs, machine-specific paths, or implicit
 defaults that would be unclear in Cloudflare Pages or CI. Public frontend
 configuration must not contain secrets. Deploy hook URLs are secrets and must
 not be committed.
+
+`BRAND_API_BASE_URL` is the build-time API base URL for the core backend public
+brand API.
 
 ## Testing And CI
 
