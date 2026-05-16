@@ -9,8 +9,11 @@ backend public brand API. Keep delivery simple, static-first, and aligned with
 
 1. Feature work starts from `dev` on a short-lived feature branch.
 2. Feature branches merge back to `dev` through PR review.
-3. `dev` promotes to `staging` after checks pass and the change is ready for browser smoke validation.
-4. `staging` promotes to `prod` only through an approved manual release.
+3. Cloudflare Pages staging builds directly from `dev`.
+4. Production builds from a separate `prod` branch. The `prod` branch is not
+   required to exist before the first staging baseline is configured.
+5. Promotion from staging to production is manual and happens by updating the
+   `prod` branch only after staging validation is accepted.
 
 Do not use the brand frontend pipeline for backend migrations, admin workflow validation, or broad end-to-end coverage.
 
@@ -23,7 +26,90 @@ PRs run the minimal Astro project gate:
 - Run `test`.
 - Run `build` against a local fixture server for the public brand API.
 
+The current PR workflow is `.github/workflows/pr-ci.yml`. The expected required
+PR check name for the first repository gate baseline is `PR CI / verify`.
+
 The first CI version should stay small. Prefer fast checks that protect Astro rendering, TypeScript correctness, static output, and public-page regressions.
+
+## Cloudflare Pages Baseline
+
+Cloudflare Pages is the deployment target for this repo.
+
+Expected staging setup:
+
+- Branch: `dev`.
+- Environment: Cloudflare Pages staging.
+- Build command: `npm run build`.
+- Output directory: `dist`.
+- Build-time data source: the core backend staging public API.
+- Content freshness: update backend public brand data, then trigger a
+  Cloudflare Pages rebuild/redeploy so Astro fetches a fresh static snapshot.
+
+Expected production setup:
+
+- Branch: `prod`.
+- Environment: Cloudflare Pages production.
+- Build command: `npm run build`.
+- Output directory: `dist`.
+- Build-time data source: the core backend production public API.
+- Production promotion is manual and outside the first staging baseline.
+
+PR preview deployments, if enabled in Cloudflare Pages, are temporary
+per-PR previews. They are separate from the staging environment and are not the
+source of staging smoke evidence.
+
+No Firebase Hosting brand rewrite, `stds_brand_backend`, brand thin Cloud Run
+service, booking flow, write API, CMS, or realtime availability is part of this
+deployment shape.
+
+## Cloudflare Environment Variables
+
+Configure these as Cloudflare Pages build-time environment variables. Values are
+operator-managed and must not be committed.
+
+| Name | Required | Scope | Safe example shape | Used for |
+| --- | --- | --- | --- | --- |
+| `BRAND_API_BASE_URL` | Yes | Staging and production builds | `https://example.com` | Core backend public API base URL for profile, FAQs, and availability. |
+| `SITE_URL` | Yes | Staging and production builds | `https://example.com` | Absolute public origin for canonical and metadata URLs. |
+
+`BRAND_API_BASE_URL` must allow build-time fetches for:
+
+- `GET /api/v1/public/brand/profile`
+- `GET /api/v1/public/brand/faqs`
+- `GET /api/v1/public/properties/availability`
+
+`SITE_URL` must be an absolute origin with no path, query, or hash. A trailing
+slash may be normalized by the site code.
+
+Do not commit real environment values, deploy hook URLs, Cloudflare API tokens,
+or private account-specific identifiers.
+
+## Operator Setup Checklist
+
+Repo-side baseline:
+
+- Confirm GitHub default branch is `dev`.
+- Configure Cloudflare Pages staging to build from `dev`.
+- Configure Cloudflare Pages production to build from `prod` when production is
+  introduced.
+- Set build command to `npm run build`.
+- Set output directory to `dist`.
+- Set `BRAND_API_BASE_URL` and `SITE_URL` for staging.
+- Later, set separate production values for `BRAND_API_BASE_URL` and `SITE_URL`.
+
+Repository gate baseline:
+
+- Protect `dev` or configure a GitHub ruleset for `dev`.
+- Require pull requests before merge if that remains the accepted repo flow.
+- Require `PR CI / verify` before merge.
+- Prevent force pushes to protected branches.
+- Decide separately whether approvals, stale-review dismissal, linear history,
+  or production-specific rules are needed.
+
+Branch protection, rulesets, required checks, Cloudflare project settings, and
+Cloudflare environment variables are operator-managed. This document describes
+the desired baseline; it does not claim those settings are configured unless
+separate non-secret evidence is recorded.
 
 ## Dependency Advisories
 
@@ -38,7 +124,8 @@ through normal Astro upgrades.
 
 ## Staging Smoke
 
-After deploying `staging`, verify:
+Actual first staging deployment validation belongs to a follow-up smoke/evidence
+issue. After Cloudflare Pages builds staging from `dev`, verify:
 
 - Public pages load successfully at their expected URLs.
 - Core SEO metadata is present: page title, description, canonical URL when applicable, and Open Graph tags.
@@ -58,6 +145,21 @@ Backend API smoke should cover:
 
 Use the core backend `/health` only as an environment sanity check; it is not a
 substitute for the three public endpoint checks.
+
+Future non-secret staging evidence should record:
+
+- Staging URL.
+- Branch and commit SHA.
+- Cloudflare Pages deployment or build identifier when available.
+- Build command and output directory.
+- Confirmation that required environment variables are configured, without
+  recording their private values.
+- Confirmation that static pages and generated assets were published.
+- Confirmation that build-time data fetches succeeded for the three public
+  brand endpoints.
+
+Do not record secrets, tokens, deploy hook URLs, private environment values, or
+actual Cloudflare credential material.
 
 ## Production Release
 

@@ -60,6 +60,11 @@ provide `BRAND_API_BASE_URL` as the build-time API base URL for local, preview,
 staging, and production builds. Do not hardcode local, staging, production,
 Firebase, or Cloud Run URLs.
 
+Cloudflare Pages staging builds from the GitHub `dev` branch. Production is
+reserved for a separate `prod` branch when production promotion is introduced.
+The build command is `npm run build`, and the deployable output directory is
+`dist`.
+
 `SITE_URL` is also required at build time for canonical URLs and absolute
 metadata. It is non-secret public configuration and must be an absolute origin
 URL with no path, query, or hash, for example `https://example.com`. A trailing

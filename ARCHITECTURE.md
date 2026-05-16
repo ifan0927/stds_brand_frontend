@@ -89,10 +89,16 @@ Expected shape:
 
 - Astro builds static assets into a deployable output directory.
 - Cloudflare Pages serves the brand website.
-- Cloudflare Pages provides branch and pull-request preview deployments.
+- Cloudflare Pages staging builds from the GitHub `dev` branch.
+- Cloudflare Pages production builds from a separate `prod` branch when
+  production promotion is introduced.
+- Cloudflare Pages may provide pull-request preview deployments, but they are
+  temporary previews and not the staging environment.
 - The Astro build fetches brand data from the configured core backend public
   API base URL.
 - A protected Cloudflare Pages deploy hook can trigger scheduled rebuilds.
+- Public content freshness requires a Cloudflare Pages rebuild/redeploy because
+  the profile, FAQ, and availability content is captured at build time.
 
 No Firebase Hosting brand rewrite or runtime backend proxy is required for the
 active architecture. The brand site does not depend on `stds_brand_backend` or a
