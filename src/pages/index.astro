@@ -6,6 +6,9 @@ import AboutSection from '../components/AboutSection.astro';
 import FaqList from '../components/FaqList.astro';
 import ContactBand from '../components/ContactBand.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import { fetchPublicBrandHomeData } from '../lib/api/brand';
+
+const { profile, faqs, availability } = await fetchPublicBrandHomeData();
 ---
 <!doctype html>
 <html lang="zh-Hant">
@@ -21,11 +24,11 @@ import SiteFooter from '../components/SiteFooter.astro';
 
 <SiteHeader />
 <Hero />
-<PropertiesRegistry />
+<PropertiesRegistry items={availability} />
 <AboutSection />
-<FaqList />
-<ContactBand />
-<SiteFooter />
+<FaqList items={faqs} />
+<ContactBand profile={profile} />
+<SiteFooter updatedAt={profile?.updated_at ?? null} />
 
 <style is:global>
 @import "../styles/base.css";

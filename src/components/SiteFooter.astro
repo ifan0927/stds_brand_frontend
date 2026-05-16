@@ -1,4 +1,18 @@
 ---
+type Props = {
+  updatedAt: string | null;
+};
+
+const { updatedAt } = Astro.props;
+
+function formatDate(value: string | null): string {
+  if (!value) return '—';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '—';
+
+  return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+}
 ---
 <footer class="foot">
   <div class="wrap">
@@ -19,7 +33,7 @@
         <span class="sep"></span>
         <span>大台南包租代管</span>
         <span class="sep"></span>
-        <span>資料更新於 <span id="updated-at">—</span></span>
+        <span>資料更新於 <span id="updated-at">{formatDate(updatedAt)}</span></span>
       </div>
     </div>
   </div>

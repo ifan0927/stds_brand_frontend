@@ -1,4 +1,11 @@
 ---
+import type { BrandProfile } from '../lib/api/brand';
+
+type Props = {
+  profile: BrandProfile | null;
+};
+
+const { profile } = Astro.props;
 ---
 <section class="band" id="contact" style="padding-top:0;">
   <div class="wrap">
@@ -8,7 +15,22 @@
         <p class="lede">無論是想看房、想評估託管，或只是想了解奕德的服務內容，都歡迎直接聯繫。</p>
       </div>
       <div class="contact-info" id="contact-info">
-        <div class="ci-row"><span class="k">Loading…</span></div>
+        <div class="ci-row">
+          <span class="k">電話 PHONE</span>
+          <span class="v">
+            {profile?.contact_phone ? <a href={`tel:${profile.contact_phone}`}>{profile.contact_phone}</a> : '—'}
+          </span>
+        </div>
+        <div class="ci-row">
+          <span class="k">EMAIL</span>
+          <span class="v">
+            {profile?.contact_email ? <a href={`mailto:${profile.contact_email}`}>{profile.contact_email}</a> : '—'}
+          </span>
+        </div>
+        <div class="ci-row">
+          <span class="k">地址 ADDRESS</span>
+          <span class="v">{profile?.contact_address ?? '—'}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -80,40 +102,3 @@
 .ci-row .v a{ color: var(--canvas); }
 .ci-row .v a:hover{ color: var(--accent-soft); }
 </style>
-
-<script>
-(async () => {
-  try {
-    const r = await fetch('/mock/profile.json');
-    const { profile } = await r.json();
-    const el = document.getElementById('contact-info');
-    if (!profile) {
-      el.innerHTML = `
-        <div class="ci-row"><span class="k">電話 PHONE</span><span class="v">—</span></div>
-        <div class="ci-row"><span class="k">EMAIL</span><span class="v">—</span></div>
-        <div class="ci-row"><span class="k">地址 ADDRESS</span><span class="v">—</span></div>
-      `;
-      return;
-    }
-    const rows = [];
-    if (profile.contact_phone)   rows.push({ k: '電話 PHONE',   v: `<a href="tel:${profile.contact_phone}">${profile.contact_phone}</a>` });
-    if (profile.contact_email)   rows.push({ k: 'EMAIL',         v: `<a href="mailto:${profile.contact_email}">${profile.contact_email}</a>` });
-    if (profile.contact_address) rows.push({ k: '地址 ADDRESS', v: profile.contact_address });
-    el.innerHTML = rows.map(r => `
-      <div class="ci-row">
-        <span class="k">${r.k}</span>
-        <span class="v">${r.v}</span>
-      </div>
-    `).join('');
-
-    if (profile.updated_at) {
-      const dt = new Date(profile.updated_at);
-      const el = document.getElementById('updated-at');
-      if (el) el.textContent =
-        `${dt.getFullYear()}.${String(dt.getMonth()+1).padStart(2,'0')}.${String(dt.getDate()).padStart(2,'0')}`;
-    }
-  } catch(err) {
-    console.error('profile fetch failed', err);
-  }
-})();
-</script>

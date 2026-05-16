@@ -1,4 +1,11 @@
 ---
+import type { FAQItem } from '../lib/api/brand';
+
+type Props = {
+  items: FAQItem[];
+};
+
+const { items } = Astro.props;
 ---
 <section class="band" id="faq" style="padding-top:0">
   <div class="wrap">
@@ -9,7 +16,24 @@
       </div>
       <p class="right">沒在下方找到答案？歡迎直接來電或寫信給我們，營業時間內快速回覆。</p>
     </div>
-    <div class="faq-list" id="faq-list"></div>
+    <div class="faq-list" id="faq-list">
+      {items.length === 0 ? (
+        <p style="color:var(--muted);text-align:center;padding:48px 0;">目前沒有常見問題。</p>
+      ) : (
+        items.map((item, index) => (
+          <details class="faq" open={index === 0}>
+            <summary>
+              <span class="q-num">Q.{String(index + 1).padStart(2, '0')}</span>
+              <span class="q-text">{item.question}</span>
+              <span class="plus">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              </span>
+            </summary>
+            <div class="a">{item.answer}</div>
+          </details>
+        ))
+      )}
+    </div>
   </div>
 </section>
 
@@ -66,31 +90,3 @@
   .faq .a{ padding-left: 42px; padding-right: 0; }
 }
 </style>
-
-<script>
-(async () => {
-  try {
-    const r = await fetch('/mock/faqs.json');
-    const { items } = await r.json();
-    const list = document.getElementById('faq-list');
-    if (!items || items.length === 0) {
-      list.innerHTML = `<p style="color:var(--muted);text-align:center;padding:48px 0;">目前沒有常見問題。</p>`;
-      return;
-    }
-    list.innerHTML = items.map((f, i) => `
-      <details class="faq" ${i === 0 ? 'open' : ''}>
-        <summary>
-          <span class="q-num">Q.${String(i+1).padStart(2,'0')}</span>
-          <span class="q-text">${f.question}</span>
-          <span class="plus">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-          </span>
-        </summary>
-        <div class="a">${f.answer}</div>
-      </details>
-    `).join('');
-  } catch(err) {
-    console.error('faqs fetch failed', err);
-  }
-})();
-</script>
