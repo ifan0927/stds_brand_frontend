@@ -2,6 +2,9 @@
   "name": "stds-brand-frontend",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "check": "astro check",
@@ -10,7 +13,7 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "astro": "^5.0.0"
+    "astro": "^6.3.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",

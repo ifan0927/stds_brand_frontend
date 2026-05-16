@@ -35,6 +35,10 @@ design references, package scripts, and the first static homepage structure are
 present. The homepage fetches public brand content from `BRAND_API_BASE_URL` at
 Astro build time and renders it into static HTML.
 
+Astro 6 requires Node.js `22.12.0` or newer. This repo includes `.nvmrc` with
+`22.12.0`; Cloudflare Pages builds should use Node 22 or set
+`NODE_VERSION=22.12.0` explicitly.
+
 ## API Boundary
 
 The frontend should read only the public readonly contract from the core

@@ -25,6 +25,17 @@ PRs run the minimal Astro project gate:
 
 The first CI version should stay small. Prefer fast checks that protect Astro rendering, TypeScript correctness, static output, and public-page regressions.
 
+## Dependency Advisories
+
+Astro 6 requires Node.js `22.12.0` or newer; keep Cloudflare Pages, CI, and
+local builds on Node 22+.
+
+`npm audit` may report moderate advisories through the dev-only
+`@astrojs/check` language-server YAML dependency chain. Do not run
+`npm audit fix --force` just to downgrade `@astrojs/check`; review a forward
+upgrade path when one is available. Runtime Astro advisories should be handled
+through normal Astro upgrades.
+
 ## Staging Smoke
 
 After deploying `staging`, verify:
