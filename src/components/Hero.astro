@@ -1,0 +1,80 @@
+---
+import HeroPhoto from './HeroPhoto.astro';
+import DualEntryCards from './DualEntryCards.astro';
+---
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="eyebrow">
+          <span class="dot"></span>
+          大台南 · 包租代管
+        </div>
+        <h1 class="hero-title">
+          把房子的事，<br>
+          交給<em>更穩的人</em>。
+        </h1>
+        <p class="hero-sub">
+          奕德不動產深耕大台南，提供包租與代管服務。一份合約、雙向安心——房東收益穩定，房客住得放心。
+        </p>
+      </div>
+      <HeroPhoto />
+    </div>
+
+    <DualEntryCards />
+  </div>
+</section>
+
+<style is:global>
+/* ---------- hero ---------- */
+.hero{ padding: 72px 0 64px; }
+.hero-grid{
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+@media (max-width: 960px){
+  .hero-grid{ grid-template-columns: 1fr; gap: 40px; }
+}
+.eyebrow{
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent-deep);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-bottom: 28px;
+}
+.eyebrow .dot{
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%, 100%{ opacity: 1; transform: scale(1); }
+  50%{ opacity: .4; transform: scale(.7); }
+}
+h1.hero-title{
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(48px, 7vw, 92px);
+  line-height: 1.02;
+  letter-spacing: -1.4px;
+  color: var(--ink);
+  margin: 0;
+  text-wrap: balance;
+}
+h1.hero-title em{
+  font-style: italic;
+  color: var(--accent);
+}
+.hero-sub{
+  margin-top: 32px;
+  max-width: 540px;
+  font-size: 18px;
+  color: var(--body);
+  line-height: 1.6;
+}
+
+</style>

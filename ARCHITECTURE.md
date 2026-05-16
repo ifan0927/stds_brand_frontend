@@ -3,8 +3,8 @@
 ## Purpose
 
 This repo is the public STDS brand website frontend for
-`~/stds_brand_backend`. It should be optimized for SEO, fast first load, and
-simple content consumption from the public brand API.
+the STDS core backend public brand API. It should be optimized for SEO, fast
+first load, and simple build-time content consumption.
 
 Use Astro + TypeScript. Treat this as a brand/SEO website, not an admin SPA.
 `AGENTS.md` defines working behavior, `DESIGN.md` defines product/design
@@ -16,16 +16,16 @@ When present, follow:
 - `docs/.rules/testing.md`
 - `CICD.md`
 - Backend API contract:
-  `~/stds_brand_backend/docs/api/public-brand-api.md`
+  `~/stds_backend` core public brand endpoints from
+  `https://github.com/ifan0927/STDS_backend_go/issues/209`
 
 ## Rendering Boundary
 
 Default to static Astro pages for crawlable public content.
 
-Use SSR only when static generation cannot meet the need, such as when live
-availability must be fetched per request and stale build-time data is not
-acceptable. If SSR is introduced, keep it narrow and document which routes need
-runtime rendering.
+Use build-time data fetches for profile, FAQ, and availability content. Use SSR
+only if a later issue accepts runtime freshness requirements that static
+generation cannot meet.
 
 Client-side JavaScript should be limited to small interactive islands, for
 example filters, accordions, or contact form affordances. Do not move core page
@@ -33,20 +33,21 @@ content behind client-only rendering.
 
 ## Public API Boundary
 
-The frontend may read only the public readonly JSON endpoints documented by the
-backend:
+The frontend may read only the public readonly JSON endpoints exposed by the
+core backend:
 
-- `GET /api/v1/brand/profile`
-- `GET /api/v1/brand/faqs`
-- `GET /api/v1/properties/availability`
+- `GET /api/v1/public/brand/profile`
+- `GET /api/v1/public/brand/faqs`
+- `GET /api/v1/public/properties/availability`
 
 The frontend must not depend on core STDS operational tables, admin endpoints,
 tenant data, lease data, billing data, repair data, attachments, or scheduler
 behavior. Data ownership stays in the backend and its approved brand-facing
 views.
 
-Frontend API code should be a thin typed wrapper around these public endpoints.
-Avoid generated clients until the backend publishes an OpenAPI contract.
+Frontend API code should be a thin typed build-time wrapper around these public
+endpoints. Avoid generated clients until the backend publishes an OpenAPI
+contract.
 
 ## Suggested Source Layout
 
@@ -82,21 +83,19 @@ useful.
 
 ## Deployment Shape
 
-The likely first deployment target is Firebase Hosting or another static hosting
-provider.
+The deployment target is Cloudflare Pages.
 
 Expected shape:
 
 - Astro builds static assets into a deployable output directory.
-- Static hosting serves the brand website.
-- Hosting rewrites proxy a public backend prefix, for example `/brand-api/**`,
-  to the brand backend service.
-- The frontend API wrapper can map a deployment-specific public base URL to the
-  backend service paths documented as `/api/v1/...`.
+- Cloudflare Pages serves the brand website.
+- Cloudflare Pages provides branch and pull-request preview deployments.
+- The Astro build fetches brand data from the configured core backend public
+  API base URL.
+- A protected Cloudflare Pages deploy hook can trigger scheduled rebuilds.
 
-Backend service paths remain owned by
-`~/stds_brand_backend/docs/api/public-brand-api.md`; hosting rewrites are an
-environment/deployment concern.
+No Firebase Hosting brand rewrite or runtime backend proxy is required for the
+active architecture.
 
 ## Configuration Boundary
 
@@ -106,11 +105,12 @@ Keep cloud deployment assumptions explicit. When adding configuration, document:
 - whether it is build-time or runtime
 - required environments such as local, staging, and prod
 - safe example value
-- which hosting or backend rewrite behavior depends on it
+- whether it affects local, preview, staging, or production builds
 
 Do not rely on hard-coded local URLs, machine-specific paths, or implicit
-defaults that would be unclear in Firebase Hosting, Cloud Run, or CI. Public
-frontend configuration must not contain secrets.
+defaults that would be unclear in Cloudflare Pages or CI. Public frontend
+configuration must not contain secrets. Deploy hook URLs are secrets and must
+not be committed.
 
 ## Testing And CI
 

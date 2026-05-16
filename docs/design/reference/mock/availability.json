@@ -1,0 +1,18 @@
+{
+  "items": [
+    { "property_id": "p-001", "property_public_name": "東門靜巷", "address": "台南市東區東門路二段", "has_vacant_room": true },
+    { "property_id": "p-002", "property_public_name": "成大書院", "address": "台南市東區大學路", "has_vacant_room": true },
+    { "property_id": "p-003", "property_public_name": "永康青埕", "address": "台南市永康區中華路", "has_vacant_room": false },
+    { "property_id": "p-004", "property_public_name": "安平海風", "address": "台南市安平區安平路", "has_vacant_room": true },
+    { "property_id": "p-005", "property_public_name": "中西食光", "address": "台南市中西區民生路一段", "has_vacant_room": true },
+    { "property_id": "p-006", "property_public_name": "北區晨曦", "address": "台南市北區成功路", "has_vacant_room": false },
+    { "property_id": "p-007", "property_public_name": "仁德新厝", "address": "台南市仁德區中山路", "has_vacant_room": true },
+    { "property_id": "p-008", "property_public_name": "府前雅居", "address": "台南市中西區府前路一段", "has_vacant_room": true },
+    { "property_id": "p-009", "property_public_name": "孔廟漫居", "address": "台南市中西區南門路", "has_vacant_room": true },
+    { "property_id": "p-010", "property_public_name": "成功巷弄", "address": "台南市東區崇學路", "has_vacant_room": false },
+    { "property_id": "p-011", "property_public_name": "海安藝居", "address": "台南市中西區海安路二段", "has_vacant_room": true },
+    { "property_id": "p-012", "property_public_name": "東寧靜境", "address": "台南市東區東寧路", "has_vacant_room": true },
+    { "property_id": "p-013", "property_public_name": "崇學書居", "address": "台南市東區崇善路", "has_vacant_room": false },
+    { "property_id": "p-014", "property_public_name": "永華逸境", "address": "台南市安平區永華路二段", "has_vacant_room": true }
+  ]
+}

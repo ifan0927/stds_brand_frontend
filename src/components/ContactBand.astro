@@ -1,0 +1,119 @@
+---
+---
+<section class="band" id="contact" style="padding-top:0;">
+  <div class="wrap">
+    <div class="contact">
+      <div>
+        <h2>有任何問題，<br><em>直接聊聊</em>。</h2>
+        <p class="lede">無論是想看房、想評估託管，或只是想了解奕德的服務內容，都歡迎直接聯繫。</p>
+      </div>
+      <div class="contact-info" id="contact-info">
+        <div class="ci-row"><span class="k">Loading…</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+/* ---------- contact band ---------- */
+.contact{
+  background: var(--ink);
+  color: var(--canvas);
+  border-radius: var(--r-lg);
+  padding: 64px 56px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  overflow: hidden;
+  position: relative;
+}
+@media (max-width: 720px){ .contact{ grid-template-columns: 1fr; padding: 44px 28px; gap: 36px; } }
+.contact::before{
+  content: ""; position: absolute;
+  right: -120px; top: -120px;
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, color-mix(in oklab, var(--accent) 50%, transparent), transparent 65%);
+  pointer-events: none;
+}
+.contact h2{
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(34px, 4vw, 50px);
+  line-height: 1.06;
+  letter-spacing: -.6px;
+  margin: 0;
+  color: var(--canvas);
+  position: relative;
+}
+.contact h2 em{ font-style: italic; color: var(--accent); }
+.contact .lede{
+  margin-top: 18px;
+  color: rgba(255,255,255,.7);
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 38ch;
+  position: relative;
+}
+.contact-info{
+  display: flex; flex-direction: column; gap: 18px;
+  position: relative;
+}
+.ci-row{
+  display: flex; flex-direction: column; gap: 4px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+}
+.ci-row:last-child{ border-bottom: none; padding-bottom: 0; }
+.ci-row .k{
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.5);
+}
+.ci-row .v{
+  font-size: 18px;
+  color: var(--canvas);
+  line-height: 1.4;
+}
+.ci-row .v a{ color: var(--canvas); }
+.ci-row .v a:hover{ color: var(--accent-soft); }
+</style>
+
+<script>
+(async () => {
+  try {
+    const r = await fetch('/mock/profile.json');
+    const { profile } = await r.json();
+    const el = document.getElementById('contact-info');
+    if (!profile) {
+      el.innerHTML = `
+        <div class="ci-row"><span class="k">電話 PHONE</span><span class="v">—</span></div>
+        <div class="ci-row"><span class="k">EMAIL</span><span class="v">—</span></div>
+        <div class="ci-row"><span class="k">地址 ADDRESS</span><span class="v">—</span></div>
+      `;
+      return;
+    }
+    const rows = [];
+    if (profile.contact_phone)   rows.push({ k: '電話 PHONE',   v: `<a href="tel:${profile.contact_phone}">${profile.contact_phone}</a>` });
+    if (profile.contact_email)   rows.push({ k: 'EMAIL',         v: `<a href="mailto:${profile.contact_email}">${profile.contact_email}</a>` });
+    if (profile.contact_address) rows.push({ k: '地址 ADDRESS', v: profile.contact_address });
+    el.innerHTML = rows.map(r => `
+      <div class="ci-row">
+        <span class="k">${r.k}</span>
+        <span class="v">${r.v}</span>
+      </div>
+    `).join('');
+
+    if (profile.updated_at) {
+      const dt = new Date(profile.updated_at);
+      const el = document.getElementById('updated-at');
+      if (el) el.textContent =
+        `${dt.getFullYear()}.${String(dt.getMonth()+1).padStart(2,'0')}.${String(dt.getDate()).padStart(2,'0')}`;
+    }
+  } catch(err) {
+    console.error('profile fetch failed', err);
+  }
+})();
+</script>

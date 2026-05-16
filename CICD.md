@@ -1,6 +1,9 @@
 # CI/CD
 
-This repo is the Astro + TypeScript public brand frontend for `~/stds_brand_backend`. Keep delivery simple, static-first, and aligned with `AGENTS.md`, `DESIGN.md`, `ARCHITECTURE.md` when present, and `docs/.rules/testing.md` when present.
+This repo is the Astro + TypeScript public brand frontend for the STDS core
+backend public brand API. Keep delivery simple, static-first, and aligned with
+`AGENTS.md`, `DESIGN.md`, `ARCHITECTURE.md` when present, and
+`docs/.rules/testing.md` when present.
 
 ## Branch Flow
 
@@ -29,16 +32,19 @@ After deploying `staging`, verify:
 - Public pages load successfully at their expected URLs.
 - Core SEO metadata is present: page title, description, canonical URL when applicable, and Open Graph tags.
 - Static output and assets are reachable, including CSS, JS, images, and generated Astro assets.
-- Required environment variables are documented, configured for the target environment, and do not expose secrets in frontend output.
-- Backend rewrites or API proxying work against the public brand backend contract in `~/stds_brand_backend/docs/api/public-brand-api.md`.
+- Required Cloudflare Pages environment variables are documented, configured for
+  the target environment, and do not expose secrets in frontend output.
+- Build-time data fetch succeeds against the core backend public brand
+  endpoints.
 
 Backend API smoke should cover:
 
-- `GET /api/v1/brand/profile`
-- `GET /api/v1/brand/faqs`
-- `GET /api/v1/properties/availability`
+- `GET /api/v1/public/brand/profile`
+- `GET /api/v1/public/brand/faqs`
+- `GET /api/v1/public/properties/availability`
 
-Use `/health` only as an environment sanity check; it is not a substitute for the three public endpoint checks.
+Use the core backend `/health` only as an environment sanity check; it is not a
+substitute for the three public endpoint checks.
 
 ## Production Release
 
@@ -47,8 +53,9 @@ Production releases are manual and approved. Promote only after:
 - PR checks passed before merge.
 - Staging page-load and SEO smoke passed.
 - Staging static asset checks passed.
-- Staging environment-variable and rewrite configuration matched the documented release assumptions.
-- Staging backend rewrite/API smoke passed for the three public endpoints.
+- Staging Cloudflare Pages environment-variable configuration matched the
+  documented release assumptions.
+- Staging build-time API smoke passed for the three public endpoints.
 - The release owner confirms the production change window and rollback path.
 
 ## Initial Non-Goals

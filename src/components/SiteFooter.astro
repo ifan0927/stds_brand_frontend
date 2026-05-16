@@ -1,0 +1,46 @@
+---
+---
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-inner">
+      <a class="brand" href="#top">
+        <span class="mark">
+          <svg viewBox="0 0 28 28" fill="none">
+            <circle cx="14" cy="14" r="13" fill="oklch(0.590 0.135 45)"/>
+            <path d="M7 19 L14 9 L21 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="14" cy="14" r="1.6" fill="white"/>
+          </svg>
+        </span>
+        奕德不動產
+        <small>YI&middot;DE</small>
+      </a>
+      <div class="foot-meta">
+        <span id="legal-copy">© 2026 奕德不動產</span>
+        <span class="sep"></span>
+        <span>大台南包租代管</span>
+        <span class="sep"></span>
+        <span>資料更新於 <span id="updated-at">—</span></span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style is:global>
+/* ---------- footer ---------- */
+footer.foot{
+  padding: 56px 0 32px;
+}
+.foot-inner{
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-top: 32px;
+  border-top: 1px solid var(--hairline-soft);
+}
+.foot-meta{
+  display: flex; gap: 18px; align-items: center;
+  font-size: 12.5px; color: var(--muted);
+  flex-wrap: wrap;
+}
+.foot-meta .sep{ width: 1px; height: 12px; background: var(--hairline); }
+</style>

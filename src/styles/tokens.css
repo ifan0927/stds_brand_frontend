@@ -1,0 +1,28 @@
+/* ---------- tokens ---------- */
+:root {
+  --canvas:        oklch(0.985 0.006 80);
+  --surface-soft:  oklch(0.962 0.011 75);
+  --surface-warm:  oklch(0.928 0.020 70);
+  --ink:           oklch(0.215 0.012 60);
+  --body:          oklch(0.405 0.010 60);
+  --muted:         oklch(0.555 0.010 60);
+  --muted-soft:    oklch(0.700 0.008 60);
+  --hairline:      oklch(0.880 0.008 60);
+  --hairline-soft: oklch(0.930 0.006 60);
+  --accent:        oklch(0.590 0.135 45);
+  --accent-deep:   oklch(0.470 0.130 38);
+  --accent-soft:   oklch(0.945 0.025 50);
+  --leaf:          oklch(0.460 0.060 155);
+
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 18px;
+  --r-lg: 28px;
+  --r-pill: 999px;
+
+  --serif: "Instrument Serif", "Songti TC", "PMingLiU", serif;
+  --sans: "Noto Sans TC", -apple-system, system-ui, "PingFang TC", "Helvetica Neue", sans-serif;
+  --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --shadow-card: 0 1px 0 0 rgba(40,28,16,.025), 0 8px 24px -12px rgba(40,28,16,.10);
+}

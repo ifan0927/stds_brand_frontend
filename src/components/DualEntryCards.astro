@@ -1,0 +1,99 @@
+---
+---
+<div class="dual">
+  <a class="dual-card tenant" href="#properties">
+    <span class="badge">For 房客</span>
+    <h3>找一間，可以好好住下來的房子。</h3>
+    <p>瀏覽目前可入住的物件，看房不收費、合約透明。</p>
+    <span class="go">
+      看可入住物件
+      <span class="arrow">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </span>
+    </span>
+    <span class="ornament"></span>
+  </a>
+  <a class="dual-card landlord" href="#contact">
+    <span class="badge">For 房東</span>
+    <h3>把空房，換成穩定的月入。</h3>
+    <p>包租或代管方案皆可，租務瑣事交給奕德，您只負責收款。</p>
+    <span class="go">
+      聯絡託管諮詢
+      <span class="arrow">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </span>
+    </span>
+    <span class="ornament"></span>
+  </a>
+</div>
+
+<style is:global>
+/* dual entry */
+.dual{
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 720px){ .dual{ grid-template-columns: 1fr; } }
+.dual-card{
+  background: var(--surface-soft);
+  border-radius: var(--r-lg);
+  padding: 32px;
+  display: flex; flex-direction: column; gap: 18px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--hairline-soft);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.dual-card:hover{ transform: translateY(-2px); box-shadow: var(--shadow-card); }
+.dual-card .badge{
+  align-self: flex-start;
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--muted);
+  padding: 4px 10px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-pill);
+}
+.dual-card h3{
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 30px;
+  margin: 0;
+  letter-spacing: -.3px;
+  line-height: 1.12;
+}
+.dual-card p{ margin: 0; color: var(--body); font-size: 15px; }
+.dual-card .go{
+  margin-top: 8px;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 500;
+  color: var(--ink);
+}
+.dual-card .go .arrow{
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--ink); color: var(--canvas);
+  transition: transform .2s ease, background .2s ease;
+}
+.dual-card:hover .go .arrow{ background: var(--accent); transform: translateX(4px); }
+.dual-card.landlord{ background: var(--ink); color: var(--canvas); border-color: var(--ink); }
+.dual-card.landlord .badge{ border-color: rgba(255,255,255,.2); color: rgba(255,255,255,.7); }
+.dual-card.landlord p{ color: rgba(255,255,255,.78); }
+.dual-card.landlord .go{ color: var(--canvas); }
+.dual-card.landlord .go .arrow{ background: var(--accent); }
+.dual-card > *{ position: relative; z-index: 1; }
+.dual-card .ornament{
+  position: absolute; right: -90px; bottom: -90px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--accent-soft), transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+.dual-card.landlord .ornament{
+  background: radial-gradient(circle at 35% 35%, color-mix(in oklab, var(--accent) 28%, transparent), transparent 55%);
+}
+</style>

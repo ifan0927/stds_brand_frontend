@@ -16,10 +16,8 @@ responsibilities:
   backend for the property-management system.
 - [stds_fronted](https://github.com/ifan0927/stds_fronted): main admin
   frontend for operational property-management workflows.
-- [stds_brand_backend](https://github.com/ifan0927/stds_brand_backend): thin
-  public brand backend that exposes readonly brand and availability endpoints.
 - [stds_brand_frontend](https://github.com/ifan0927/stds_brand_frontend): this
-  public brand website frontend.
+  public brand website frontend deployed through Cloudflare Pages.
 
 The brand frontend is intentionally separate from the admin frontend so it can
 stay static-first, SEO-friendly, and simple to deploy.
@@ -30,7 +28,7 @@ stay static-first, SEO-friendly, and simple to deploy.
 - TypeScript
 - Static-first rendering
 - Small interactive islands only when needed
-- Public API access through the brand backend
+- Build-time public API access through core backend public read-only endpoints
 
 The repository is currently in its initial setup phase. The first committed
 files define project direction, architecture boundaries, design references, test
@@ -38,12 +36,12 @@ rules, and CI/CD expectations before the application scaffold is added.
 
 ## API Boundary
 
-The frontend should read only the public readonly contract from
-`stds_brand_backend`:
+The frontend should read only the public readonly contract from the core
+backend public namespace:
 
-- `GET /api/v1/brand/profile`
-- `GET /api/v1/brand/faqs`
-- `GET /api/v1/properties/availability`
+- `GET /api/v1/public/brand/profile`
+- `GET /api/v1/public/brand/faqs`
+- `GET /api/v1/public/properties/availability`
 
 The brand site should not consume admin APIs, tenant data, lease data, billing
 data, repair workflows, attachments, scheduler behavior, or direct database
@@ -54,9 +52,10 @@ access.
 The goal is a small but production-minded public website foundation:
 
 - SEO-aware page structure, metadata, Open Graph data, and crawlable content
-- Cloud-deployment-friendly configuration and documented environment variables
+- Cloudflare Pages friendly configuration and documented build-time environment
+  variables
 - Clear separation from the main admin frontend
-- Thin API client boundary over the public brand API
+- Thin build-time API client boundary over the core public brand API
 - Basic CI checks for type safety, tests, and production build once scripts
   exist
 - Minimal architecture that can be reviewed and evolved without framework

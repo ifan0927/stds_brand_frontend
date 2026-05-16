@@ -1,0 +1,1088 @@
+
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>奕德不動產 — 大台南包租代管</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+  /* ---------- tokens ---------- */
+  :root{
+    --canvas:        oklch(0.985 0.006 80);
+    --surface-soft:  oklch(0.962 0.011 75);
+    --surface-warm:  oklch(0.928 0.020 70);
+    --ink:           oklch(0.215 0.012 60);
+    --body:          oklch(0.405 0.010 60);
+    --muted:         oklch(0.555 0.010 60);
+    --muted-soft:    oklch(0.700 0.008 60);
+    --hairline:      oklch(0.880 0.008 60);
+    --hairline-soft: oklch(0.930 0.006 60);
+    --accent:        oklch(0.590 0.135 45);
+    --accent-deep:   oklch(0.470 0.130 38);
+    --accent-soft:   oklch(0.945 0.025 50);
+    --leaf:          oklch(0.460 0.060 155);
+
+    --r-xs: 6px;
+    --r-sm: 10px;
+    --r-md: 18px;
+    --r-lg: 28px;
+    --r-pill: 999px;
+
+    --serif: "Instrument Serif", "Songti TC", "PMingLiU", serif;
+    --sans: "Noto Sans TC", -apple-system, system-ui, "PingFang TC", "Helvetica Neue", sans-serif;
+    --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --shadow-card: 0 1px 0 0 rgba(40,28,16,.025), 0 8px 24px -12px rgba(40,28,16,.10);
+  }
+
+  *,*::before,*::after{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  html{ scroll-behavior: smooth; scroll-padding-top: 88px; }
+  body{
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a{ color: inherit; text-decoration: none; }
+  button{ font: inherit; cursor: pointer; }
+
+  .wrap{ max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+  @media (max-width: 640px){ .wrap{ padding: 0 20px; } }
+
+  /* ---------- top nav ---------- */
+  header.nav{
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in oklab, var(--canvas) 92%, transparent);
+    backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid var(--hairline-soft);
+  }
+  .nav-inner{
+    display: flex; align-items: center; gap: 32px;
+    height: 76px;
+  }
+  .brand{
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--serif);
+    font-size: 26px;
+    letter-spacing: -0.3px;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .brand .mark{
+    width: 28px; height: 28px;
+    flex-shrink: 0;
+    display: inline-block;
+    position: relative;
+  }
+  .brand .mark svg{ display:block; width:100%; height:100%; }
+  .brand small{
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--muted);
+    letter-spacing: 1.2px;
+    margin-left: 4px;
+    align-self: flex-end;
+    padding-bottom: 4px;
+  }
+  nav.primary{
+    display: flex; gap: 28px;
+    margin-left: 16px;
+  }
+  nav.primary a{
+    font-size: 15px; font-weight: 500; color: var(--ink);
+    padding: 6px 0;
+    border-bottom: 1.5px solid transparent;
+    transition: border-color .15s ease, color .15s ease;
+  }
+  nav.primary a:hover{ border-bottom-color: var(--ink); }
+  .nav-spacer{ flex: 1; }
+  .nav-cta{
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 44px; padding: 0 22px;
+    border-radius: var(--r-pill);
+    background: var(--ink); color: var(--canvas);
+    font-size: 14px; font-weight: 500;
+    border: none;
+    transition: background .15s ease;
+    text-decoration: none;
+  }
+  .nav-cta:hover{ background: var(--accent-deep); }
+
+  @media (max-width: 820px){
+    nav.primary{ display: none; }
+  }
+
+  /* ---------- hero ---------- */
+  .hero{ padding: 72px 0 64px; }
+  .hero-grid{
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  @media (max-width: 960px){
+    .hero-grid{ grid-template-columns: 1fr; gap: 40px; }
+  }
+  .hero-photo{
+    position: relative;
+    aspect-ratio: 4/5;
+    width: 100%;
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    background: var(--surface-warm);
+    align-self: stretch;
+  }
+  .hero-photo .stripes{
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(135deg,
+        color-mix(in oklab, var(--accent) 9%, transparent) 0 1px,
+        transparent 1px 22px),
+      linear-gradient(160deg,
+        var(--surface-warm),
+        color-mix(in oklab, var(--accent-soft) 65%, var(--surface-warm)));
+  }
+  .hero-photo .ph-tag{
+    position: absolute; top: 18px; left: 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    background: var(--canvas);
+    padding: 5px 10px;
+    border-radius: var(--r-pill);
+    border: 1px solid var(--hairline);
+  }
+  .hero-photo .ph-caption{
+    position: absolute; left: 24px; bottom: 22px;
+    color: color-mix(in oklab, var(--ink) 50%, transparent);
+    max-width: 80%;
+  }
+  .hero-photo .ph-caption .l1{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .hero-photo .ph-caption .l2{
+    font-family: var(--serif);
+    font-size: 18px;
+    color: color-mix(in oklab, var(--ink) 70%, transparent);
+    line-height: 1.25;
+    display: block;
+  }
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent-deep);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-bottom: 28px;
+  }
+  .eyebrow .dot{
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%, 100%{ opacity: 1; transform: scale(1); }
+    50%{ opacity: .4; transform: scale(.7); }
+  }
+
+  h1.hero-title{
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(48px, 7vw, 92px);
+    line-height: 1.02;
+    letter-spacing: -1.4px;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  h1.hero-title em{
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub{
+    margin-top: 32px;
+    max-width: 540px;
+    font-size: 18px;
+    color: var(--body);
+    line-height: 1.6;
+  }
+
+  /* dual entry */
+  .dual{
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 720px){ .dual{ grid-template-columns: 1fr; } }
+  .dual-card{
+    background: var(--surface-soft);
+    border-radius: var(--r-lg);
+    padding: 32px;
+    display: flex; flex-direction: column; gap: 18px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--hairline-soft);
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .dual-card:hover{ transform: translateY(-2px); box-shadow: var(--shadow-card); }
+  .dual-card .badge{
+    align-self: flex-start;
+    font-family: var(--mono);
+    font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--muted);
+    padding: 4px 10px;
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-pill);
+  }
+  .dual-card h3{
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 30px;
+    margin: 0;
+    letter-spacing: -.3px;
+    line-height: 1.12;
+  }
+  .dual-card p{ margin: 0; color: var(--body); font-size: 15px; }
+  .dual-card .go{
+    margin-top: 8px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 500;
+    color: var(--ink);
+  }
+  .dual-card .go .arrow{
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--ink); color: var(--canvas);
+    transition: transform .2s ease, background .2s ease;
+  }
+  .dual-card:hover .go .arrow{ background: var(--accent); transform: translateX(4px); }
+  .dual-card.landlord{ background: var(--ink); color: var(--canvas); border-color: var(--ink); }
+  .dual-card.landlord .badge{ border-color: rgba(255,255,255,.2); color: rgba(255,255,255,.7); }
+  .dual-card.landlord p{ color: rgba(255,255,255,.78); }
+  .dual-card.landlord .go{ color: var(--canvas); }
+  .dual-card.landlord .go .arrow{ background: var(--accent); }
+  .dual-card > *{ position: relative; z-index: 1; }
+  .dual-card .ornament{
+    position: absolute; right: -90px; bottom: -90px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--accent-soft), transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .dual-card.landlord .ornament{
+    background: radial-gradient(circle at 35% 35%, color-mix(in oklab, var(--accent) 28%, transparent), transparent 55%);
+  }
+
+  /* ---------- section header ---------- */
+  section.band{ padding: 112px 0; }
+  .section-head{
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 48px; gap: 32px;
+    flex-wrap: wrap;
+  }
+  .section-head .label{
+    font-family: var(--mono); font-size: 12px;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--accent-deep);
+    margin-bottom: 16px;
+  }
+  .section-head h2{
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(36px, 4.5vw, 54px);
+    line-height: 1.06;
+    letter-spacing: -.7px;
+    margin: 0;
+    max-width: 18ch;
+    text-wrap: balance;
+  }
+  .section-head h2 em{ font-style: italic; color: var(--accent); }
+  .section-head .right{
+    color: var(--body);
+    max-width: 360px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ---------- properties (editorial registry) ---------- */
+  .props-list{
+    border-top: 1px solid var(--hairline);
+  }
+  .prop-row{
+    display: grid;
+    grid-template-columns: 56px 1fr 1.1fr 110px 28px;
+    align-items: center;
+    gap: 24px;
+    padding: 22px 12px 22px 4px;
+    border-bottom: 1px solid var(--hairline);
+    cursor: pointer;
+    transition: background .18s ease, padding .18s ease;
+  }
+  .prop-row:hover{ background: var(--surface-soft); padding-left: 16px; }
+  .prop-row .idx{
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .prop-row .name{
+    font-family: var(--serif);
+    font-size: 28px;
+    line-height: 1.1;
+    letter-spacing: -.3px;
+    color: var(--ink);
+  }
+  .prop-row .addr{
+    font-size: 14.5px;
+    color: var(--body);
+  }
+  .prop-row .addr .district{
+    color: var(--muted);
+    margin-right: 6px;
+  }
+  .prop-chip{
+    justify-self: start;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px 6px 10px;
+    border-radius: var(--r-pill);
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    font-size: 12.5px; font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .prop-chip .pip{
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--leaf);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--leaf) 18%, transparent);
+  }
+  .prop-chip.full{ color: var(--muted); background: transparent; }
+  .prop-chip.full .pip{ background: var(--muted-soft); box-shadow: none; }
+  .prop-row .arrow{
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--hairline);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    transition: transform .18s ease, background .18s ease, color .18s ease, border-color .18s ease;
+  }
+  .prop-row:hover .arrow{
+    background: var(--ink); color: var(--canvas); border-color: var(--ink);
+    transform: translateX(2px);
+  }
+  .props-foot{
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 24px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.6px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .props-foot .count em{
+    font-style: normal;
+    color: var(--accent-deep);
+    font-weight: 500;
+  }
+  .pager{
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .pager button{
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--hairline);
+    background: var(--canvas);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--ink);
+    transition: background .15s ease, border-color .15s ease, color .15s ease, opacity .15s ease;
+  }
+  .pager button:hover:not(:disabled){ background: var(--ink); color: var(--canvas); border-color: var(--ink); }
+  .pager button:disabled{ opacity: .35; cursor: not-allowed; }
+  .pager .pos{
+    margin: 0 10px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink);
+    letter-spacing: 0.6px;
+  }
+  .pager .pos em{
+    font-style: normal;
+    color: var(--accent-deep);
+    font-weight: 500;
+  }
+  @media (max-width: 820px){
+    .prop-row{
+      grid-template-columns: 40px 1fr 96px;
+      grid-template-areas:
+        "idx  name  chip"
+        "idx  addr  arrow";
+      row-gap: 6px;
+      padding: 20px 8px;
+    }
+    .prop-row .idx{ grid-area: idx; align-self: start; padding-top: 6px; }
+    .prop-row .name{ grid-area: name; font-size: 22px; }
+    .prop-row .addr{ grid-area: addr; font-size: 13.5px; }
+    .prop-chip{ grid-area: chip; justify-self: end; }
+    .prop-row .arrow{ grid-area: arrow; justify-self: end; }
+  }
+  /* skeleton row */
+  .prop-row-skel{
+    height: 76px;
+    border-bottom: 1px solid var(--hairline);
+    background: linear-gradient(90deg,
+      transparent 0%,
+      color-mix(in oklab, var(--surface-soft) 60%, transparent) 50%,
+      transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+  }
+
+  /* ---------- about / why ---------- */
+  .why{
+    background: var(--surface-soft);
+    border-radius: var(--r-lg);
+    padding: 64px 56px;
+  }
+  @media (max-width: 720px){ .why{ padding: 40px 28px; } }
+  .why-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 36px;
+    margin-top: 24px;
+  }
+  @media (max-width: 720px){ .why-grid{ grid-template-columns: 1fr; gap: 28px; } }
+  .why-item .num{
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--accent);
+  }
+  .why-item h4{
+    font-size: 18px; font-weight: 600;
+    margin: 12px 0 8px;
+    letter-spacing: -.1px;
+  }
+  .why-item p{
+    margin: 0;
+    color: var(--body);
+    font-size: 14.5px;
+    line-height: 1.65;
+  }
+  /* about right aside */
+  .about-head{
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 56px;
+    align-items: flex-start;
+    margin-bottom: 48px;
+  }
+  @media (max-width: 820px){
+    .about-head{ grid-template-columns: 1fr; gap: 32px; }
+  }
+  .about-head .lead .label{
+    font-family: var(--mono); font-size: 12px;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--accent-deep);
+    margin-bottom: 16px;
+  }
+  .about-head .lead h2{
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(36px, 4.5vw, 54px);
+    line-height: 1.06;
+    letter-spacing: -.7px;
+    margin: 0;
+    text-wrap: balance;
+    max-width: 14ch;
+  }
+  .about-head .lead h2 em{ font-style: italic; color: var(--accent); }
+  .about-aside{
+    position: relative;
+    padding-left: 28px;
+  }
+  .about-aside .quote-mark{
+    position: absolute;
+    left: 0; top: -8px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 64px;
+    line-height: 1;
+    color: var(--accent);
+    user-select: none;
+  }
+  .about-aside .quote-text{
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 20px;
+    line-height: 1.45;
+    color: var(--ink);
+    margin: 0 0 24px;
+    letter-spacing: -.2px;
+  }
+  .about-aside .meta{
+    border-top: 1px solid var(--hairline);
+  }
+  .about-aside .meta .row{
+    display: flex; align-items: baseline; gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .about-aside .meta .k{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    flex-shrink: 0;
+    width: 96px;
+  }
+  .about-aside .meta .v{
+    color: var(--ink);
+    font-size: 14.5px;
+    line-height: 1.4;
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq-list{
+    display: flex; flex-direction: column;
+    border-top: 1px solid var(--hairline);
+  }
+  .faq{ border-bottom: 1px solid var(--hairline); }
+  .faq summary{
+    list-style: none;
+    cursor: pointer;
+    padding: 26px 8px 26px 0;
+    display: flex; align-items: center; gap: 24px;
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.3;
+    color: var(--ink);
+    letter-spacing: -.2px;
+  }
+  .faq summary::-webkit-details-marker{ display: none; }
+  .faq summary .q-num{
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    flex-shrink: 0;
+    min-width: 28px;
+    transform: translateY(-2px);
+  }
+  .faq summary .q-text{ flex: 1; }
+  .faq summary .plus{
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--hairline);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform .25s ease, background .25s ease, color .25s ease, border-color .25s ease;
+    color: var(--ink);
+  }
+  .faq[open] summary .plus{
+    background: var(--ink); color: var(--canvas); border-color: var(--ink);
+    transform: rotate(45deg);
+  }
+  .faq .a{
+    padding: 0 64px 28px 56px;
+    color: var(--body);
+    font-size: 15.5px;
+    line-height: 1.7;
+    max-width: 70ch;
+  }
+  @media (max-width: 600px){
+    .faq summary{ font-size: 18px; gap: 14px; }
+    .faq .a{ padding-left: 42px; padding-right: 0; }
+  }
+
+  /* ---------- contact band ---------- */
+  .contact{
+    background: var(--ink);
+    color: var(--canvas);
+    border-radius: var(--r-lg);
+    padding: 64px 56px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+    overflow: hidden;
+    position: relative;
+  }
+  @media (max-width: 720px){ .contact{ grid-template-columns: 1fr; padding: 44px 28px; gap: 36px; } }
+  .contact::before{
+    content: ""; position: absolute;
+    right: -120px; top: -120px;
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, color-mix(in oklab, var(--accent) 50%, transparent), transparent 65%);
+    pointer-events: none;
+  }
+  .contact h2{
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(34px, 4vw, 50px);
+    line-height: 1.06;
+    letter-spacing: -.6px;
+    margin: 0;
+    color: var(--canvas);
+    position: relative;
+  }
+  .contact h2 em{ font-style: italic; color: var(--accent); }
+  .contact .lede{
+    margin-top: 18px;
+    color: rgba(255,255,255,.7);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 38ch;
+    position: relative;
+  }
+  .contact-info{
+    display: flex; flex-direction: column; gap: 18px;
+    position: relative;
+  }
+  .ci-row{
+    display: flex; flex-direction: column; gap: 4px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,.12);
+  }
+  .ci-row:last-child{ border-bottom: none; padding-bottom: 0; }
+  .ci-row .k{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.5);
+  }
+  .ci-row .v{
+    font-size: 18px;
+    color: var(--canvas);
+    line-height: 1.4;
+  }
+  .ci-row .v a{ color: var(--canvas); }
+  .ci-row .v a:hover{ color: var(--accent-soft); }
+
+  /* ---------- footer ---------- */
+  footer.foot{
+    padding: 56px 0 32px;
+  }
+  .foot-inner{
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding-top: 32px;
+    border-top: 1px solid var(--hairline-soft);
+  }
+  .foot-meta{
+    display: flex; gap: 18px; align-items: center;
+    font-size: 12.5px; color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .foot-meta .sep{ width: 1px; height: 12px; background: var(--hairline); }
+
+  /* ---------- skeleton ---------- */
+  .skel{
+    background: linear-gradient(90deg,
+      var(--surface-soft) 0%,
+      var(--surface-warm) 50%,
+      var(--surface-soft) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+  }
+  @keyframes shimmer{ 0%{background-position: 200% 0;} 100%{background-position: -200% 0;} }
+</style>
+</head>
+<body>
+
+<!-- ============== NAV ============== -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">
+      <span class="mark">
+        <!-- 奕 mark: two overlapping arches, suggests rooftops / "yi" -->
+        <svg viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="13" fill="oklch(0.590 0.135 45)"/>
+          <path d="M7 19 L14 9 L21 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="14" cy="14" r="1.6" fill="white"/>
+        </svg>
+      </span>
+      奕德不動產
+      <small>YI&middot;DE</small>
+    </a>
+    <nav class="primary">
+      <a href="#properties">可入住物件</a>
+      <a href="#about">關於我們</a>
+      <a href="#faq">常見問題</a>
+    </nav>
+    <span class="nav-spacer"></span>
+    <a class="nav-cta" href="#contact">
+      聯絡我們
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- ============== HERO ============== -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="eyebrow">
+          <span class="dot"></span>
+          大台南 · 包租代管
+        </div>
+        <h1 class="hero-title">
+          把房子的事，<br>
+          交給<em>更穩的人</em>。
+        </h1>
+        <p class="hero-sub">
+          奕德不動產深耕大台南，提供包租與代管服務。一份合約、雙向安心——房東收益穩定，房客住得放心。
+        </p>
+      </div>
+      <div class="hero-photo" aria-hidden="true">
+        <div class="stripes"></div>
+        <span class="ph-tag">Photo · Reserved</span>
+        <span class="ph-caption">
+          <span class="l1">Img · 01</span>
+          <span class="l2">台南實景 / 代表物件主視覺</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="dual">
+      <a class="dual-card tenant" href="#properties">
+        <span class="badge">For 房客</span>
+        <h3>找一間，可以好好住下來的房子。</h3>
+        <p>瀏覽目前可入住的物件，看房不收費、合約透明。</p>
+        <span class="go">
+          看可入住物件
+          <span class="arrow">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </span>
+        </span>
+        <span class="ornament"></span>
+      </a>
+      <a class="dual-card landlord" href="#contact">
+        <span class="badge">For 房東</span>
+        <h3>把空房，換成穩定的月入。</h3>
+        <p>包租或代管方案皆可，租務瑣事交給奕德，您只負責收款。</p>
+        <span class="go">
+          聯絡託管諮詢
+          <span class="arrow">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </span>
+        </span>
+        <span class="ornament"></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PROPERTIES ============== -->
+<section class="band" id="properties">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="label">— 目前可入住</div>
+        <h2>正在<em>等你的</em><br>下一個家。</h2>
+      </div>
+      <p class="right">每一間物件皆由奕德親自驗收、簽約、代管，分布於大台南各行政區。</p>
+    </div>
+
+    <div class="props-list" id="props-list">
+      <div class="prop-row-skel"></div>
+      <div class="prop-row-skel"></div>
+      <div class="prop-row-skel"></div>
+    </div>
+    <div class="props-foot" id="props-foot" style="visibility:hidden">
+      <span class="count"></span>
+      <div class="pager" id="pager" hidden>
+        <button type="button" id="prev-page" aria-label="上一頁">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>
+        </button>
+        <span class="pos"><em id="page-now">1</em> / <span id="page-total">1</span></span>
+        <button type="button" id="next-page" aria-label="下一頁">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== ABOUT / WHY ============== -->
+<section class="band" id="about" style="padding-top:0">
+  <div class="wrap">
+    <div class="why">
+      <div class="about-head">
+        <div class="lead">
+          <div class="label">— 關於奕德</div>
+          <h2>不只是<em>仲介</em>，<br>是長期的<em>居住管家</em>。</h2>
+        </div>
+        <aside class="about-aside">
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <p class="quote-text">好的居住，需要好的中介者。透明、穩定、責任歸屬，是奕德服務的核心。</p>
+          <div class="meta">
+            <div class="row"><span class="k">Service area</span><span class="v">大台南 · 東區 / 中西 / 北區 / 安平 / 永康 / 仁德</span></div>
+            <div class="row"><span class="k">Plans</span><span class="v">包租 / 代管</span></div>
+            <div class="row"><span class="k">Updates</span><span class="v">物件與 FAQ 均動態同步</span></div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="why-grid">
+        <div class="why-item">
+          <div class="num">01</div>
+          <h4>在地深耕，大台南</h4>
+          <p>東區、中西區、北區、安平、永康、仁德皆有代管物件，熟悉台南租屋市場與在地需求。</p>
+        </div>
+        <div class="why-item">
+          <div class="num">02</div>
+          <h4>一份合約，雙向安心</h4>
+          <p>房東收益穩定、房客一個窗口。租務、收租、退租點交全程由奕德負責，不必兩邊跑。</p>
+        </div>
+        <div class="why-item">
+          <div class="num">03</div>
+          <h4>透明、無仲介費</h4>
+          <p>房客零仲介費，所有條款列在電子合約中。費用清楚，沒有第二份隱藏成本。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FAQ ============== -->
+<section class="band" id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="label">— 常見問題</div>
+        <h2>關於奕德，<br><em>你可能想知道</em>。</h2>
+      </div>
+      <p class="right">沒在下方找到答案？歡迎直接來電或寫信給我們，營業時間內快速回覆。</p>
+    </div>
+    <div class="faq-list" id="faq-list"></div>
+  </div>
+</section>
+
+<!-- ============== CONTACT ============== -->
+<section class="band" id="contact" style="padding-top:0;">
+  <div class="wrap">
+    <div class="contact">
+      <div>
+        <h2>有任何問題，<br><em>直接聊聊</em>。</h2>
+        <p class="lede">無論是想看房、想評估託管，或只是想了解奕德的服務內容，都歡迎直接聯繫。</p>
+      </div>
+      <div class="contact-info" id="contact-info">
+        <div class="ci-row"><span class="k">Loading…</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-inner">
+      <a class="brand" href="#top">
+        <span class="mark">
+          <svg viewBox="0 0 28 28" fill="none">
+            <circle cx="14" cy="14" r="13" fill="oklch(0.590 0.135 45)"/>
+            <path d="M7 19 L14 9 L21 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="14" cy="14" r="1.6" fill="white"/>
+          </svg>
+        </span>
+        奕德不動產
+        <small>YI&middot;DE</small>
+      </a>
+      <div class="foot-meta">
+        <span id="legal-copy">© 2026 奕德不動產</span>
+        <span class="sep"></span>
+        <span>大台南包租代管</span>
+        <span class="sep"></span>
+        <span>資料更新於 <span id="updated-at">—</span></span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------- mock API client ---------- */
+/* When real backend is live, replace API_BASE with "/api/v1" and remove .json suffixes. */
+const API_BASE = "./mock";
+
+async function getProfile(){
+  const r = await fetch(`${API_BASE}/profile.json`);
+  return (await r.json()).profile;
+}
+async function getFaqs(){
+  const r = await fetch(`${API_BASE}/faqs.json`);
+  return (await r.json()).items;
+}
+async function getAvailability(){
+  const r = await fetch(`${API_BASE}/availability.json`);
+  return (await r.json()).items;
+}
+
+/* ---------- renderers ---------- */
+const PAGE_SIZE = 6;
+let _propsState = { all: [], page: 1 };
+
+function splitAddress(addr){
+  // Pull leading admin region (e.g. 台南市東區) so we can de-emphasize it.
+  const m = addr.match(/^(.+?[市縣].+?[區鄉鎮市])(.*)$/);
+  if (m) return { district: m[1], rest: m[2].trim() };
+  return { district: '', rest: addr };
+}
+
+function drawPropsPage(){
+  const list = document.getElementById('props-list');
+  const { all, page } = _propsState;
+  const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
+  const start = (page - 1) * PAGE_SIZE;
+  const slice = all.slice(start, start + PAGE_SIZE);
+
+  list.innerHTML = slice.map((p, i) => {
+    const { district, rest } = splitAddress(p.address);
+    const globalIdx = start + i + 1;
+    return `
+      <div class="prop-row" data-id="${p.property_id}">
+        <span class="idx">${String(globalIdx).padStart(2,'0')}</span>
+        <span class="name">${p.property_public_name}</span>
+        <span class="addr"><span class="district">${district}</span>${rest}</span>
+        <span class="prop-chip ${p.has_vacant_room ? '' : 'full'}">
+          <span class="pip"></span>
+          ${p.has_vacant_room ? '可入住' : '滿房'}
+        </span>
+        <span class="arrow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </span>
+      </div>
+    `;
+  }).join('');
+
+  // pager + count
+  const vacant = all.filter(i => i.has_vacant_room).length;
+  const foot = document.getElementById('props-foot');
+  const pager = document.getElementById('pager');
+  foot.style.visibility = 'visible';
+  foot.querySelector('.count').innerHTML =
+    `共 <em>${vacant}</em> 間可入住 · 顯示 ${start + 1}–${start + slice.length} / ${all.length} 間`;
+
+  if (totalPages > 1){
+    pager.hidden = false;
+    document.getElementById('page-now').textContent = page;
+    document.getElementById('page-total').textContent = totalPages;
+    document.getElementById('prev-page').disabled = page <= 1;
+    document.getElementById('next-page').disabled = page >= totalPages;
+  } else {
+    pager.hidden = true;
+  }
+}
+
+function renderProps(items){
+  const list = document.getElementById('props-list');
+  if (!items || items.length === 0){
+    list.innerHTML = `<p style="color:var(--muted);text-align:center;padding:64px 0;border-bottom:1px solid var(--hairline);">目前無可入住物件。</p>`;
+    document.getElementById('props-foot').style.visibility = 'hidden';
+    return;
+  }
+  // Vacant rooms first, then full, but preserve order within groups.
+  const sorted = [...items].sort((a,b) => (b.has_vacant_room ? 1 : 0) - (a.has_vacant_room ? 1 : 0));
+  _propsState = { all: sorted, page: 1 };
+  drawPropsPage();
+}
+
+/* page navigation */
+document.getElementById('prev-page').addEventListener('click', () => {
+  if (_propsState.page > 1){
+    _propsState.page -= 1;
+    drawPropsPage();
+    document.getElementById('properties').scrollIntoView({ behavior: 'instant', block: 'start' });
+  }
+});
+document.getElementById('next-page').addEventListener('click', () => {
+  const total = Math.ceil(_propsState.all.length / PAGE_SIZE);
+  if (_propsState.page < total){
+    _propsState.page += 1;
+    drawPropsPage();
+    document.getElementById('properties').scrollIntoView({ behavior: 'instant', block: 'start' });
+  }
+});
+
+function renderFaqs(items){
+  const list = document.getElementById('faq-list');
+  if (!items || items.length === 0){
+    list.innerHTML = `<p style="color:var(--muted);text-align:center;padding:48px 0;">目前沒有常見問題。</p>`;
+    return;
+  }
+  list.innerHTML = items.map((f, i) => `
+    <details class="faq" ${i === 0 ? 'open' : ''}>
+      <summary>
+        <span class="q-num">Q.${String(i+1).padStart(2,'0')}</span>
+        <span class="q-text">${f.question}</span>
+        <span class="plus">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+      </summary>
+      <div class="a">${f.answer}</div>
+    </details>
+  `).join('');
+}
+
+function renderContact(p){
+  const el = document.getElementById('contact-info');
+  if (!p){
+    el.innerHTML = `<div class="ci-row"><span class="v">聯絡資訊載入中…</span></div>`;
+    return;
+  }
+  const rows = [];
+  if (p.contact_phone)   rows.push({ k: '電話 PHONE',   v: `<a href="tel:${p.contact_phone}">${p.contact_phone}</a>` });
+  if (p.contact_email)   rows.push({ k: 'EMAIL',         v: `<a href="mailto:${p.contact_email}">${p.contact_email}</a>` });
+  if (p.contact_address) rows.push({ k: '地址 ADDRESS', v: p.contact_address });
+  el.innerHTML = rows.map(r => `
+    <div class="ci-row">
+      <span class="k">${r.k}</span>
+      <span class="v">${r.v}</span>
+    </div>
+  `).join('');
+
+  if (p.updated_at){
+    const dt = new Date(p.updated_at);
+    document.getElementById('updated-at').textContent =
+      `${dt.getFullYear()}.${String(dt.getMonth()+1).padStart(2,'0')}.${String(dt.getDate()).padStart(2,'0')}`;
+  }
+}
+
+/* ---------- boot ---------- */
+(async () => {
+  try{
+    const [profile, faqs, avail] = await Promise.all([
+      getProfile(), getFaqs(), getAvailability()
+    ]);
+    renderContact(profile);
+    renderFaqs(faqs);
+    renderProps(avail);
+  } catch(err){
+    console.error('API load failed', err);
+  }
+})();
+</script>
+
+</body>
+</html>

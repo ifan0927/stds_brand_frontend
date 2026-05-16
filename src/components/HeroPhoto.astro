@@ -1,0 +1,64 @@
+---
+---
+<div class="hero-photo" aria-hidden="true">
+  <div class="stripes"></div>
+  <span class="ph-tag">Photo · Reserved</span>
+  <span class="ph-caption">
+    <span class="l1">Img · 01</span>
+    <span class="l2">台南實景 / 代表物件主視覺</span>
+  </span>
+</div>
+
+<style is:global>
+.hero-photo{
+  position: relative;
+  aspect-ratio: 4/5;
+  width: 100%;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--surface-warm);
+  align-self: stretch;
+}
+.hero-photo .stripes{
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(135deg,
+      color-mix(in oklab, var(--accent) 9%, transparent) 0 1px,
+      transparent 1px 22px),
+    linear-gradient(160deg,
+      var(--surface-warm),
+      color-mix(in oklab, var(--accent-soft) 65%, var(--surface-warm)));
+}
+.hero-photo .ph-tag{
+  position: absolute; top: 18px; left: 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  background: var(--canvas);
+  padding: 5px 10px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--hairline);
+}
+.hero-photo .ph-caption{
+  position: absolute; left: 24px; bottom: 22px;
+  color: color-mix(in oklab, var(--ink) 50%, transparent);
+  max-width: 80%;
+}
+.hero-photo .ph-caption .l1{
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+.hero-photo .ph-caption .l2{
+  font-family: var(--serif);
+  font-size: 18px;
+  color: color-mix(in oklab, var(--ink) 70%, transparent);
+  line-height: 1.25;
+  display: block;
+}
+</style>
