@@ -134,5 +134,8 @@ basic metadata presence.
 - No frontend ownership of backend data rules.
 - No direct database access.
 - No private STDS operational API consumption.
+- No booking, reservation, public contact-form submission, or other write API.
+- No realtime availability contract; published availability is a build-time
+  snapshot until a later issue changes that architecture.
 - No speculative CMS, generated client, or multi-tenant architecture until a
   concrete issue requires it.

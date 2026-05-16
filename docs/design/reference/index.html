@@ -922,8 +922,8 @@
 </footer>
 
 <script>
-/* ---------- mock API client ---------- */
-/* When real backend is live, replace API_BASE with "/api/v1" and remove .json suffixes. */
+/* ---------- standalone mock API client ---------- */
+/* Design artifact only. Production Astro must fetch real API data at build time. */
 const API_BASE = "./mock";
 
 async function getProfile(){

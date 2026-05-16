@@ -29,7 +29,9 @@ The files in `reference/` are **design references**, written as a static HTML+CS
 
 - The page is content-led, mostly static, with three build-time data fetches → Astro's island/SSG model fits perfectly.
 - No client-side routing required; this is a single landing page.
-- The three backend endpoints are read-only, public, and JSON — they can be fetched at **build time** (preferred — static page, fastest delivery) or at **runtime client-side** (use if data must always be fresh between deploys).
+- The three backend endpoints are read-only, public, and JSON. Fetch them at
+  **build time** so the deployed page contains crawlable static content. Do not
+  use runtime client-side API calls to compose the core page content.
 
 ### Suggested project layout
 
@@ -57,7 +59,7 @@ public/
   fonts/                       # optionally self-host Google Fonts for perf
 ```
 
-### Build-time vs runtime fetch — recommendation
+### Build-time data fetch
 
 | Endpoint | Recommendation | Reasoning |
 |---|---|---|
@@ -67,6 +69,8 @@ public/
 
 The Astro page can use top-level `await fetch(...)` in the frontmatter for all
 three. Daily Cloudflare Pages deploy-hook rebuilds refresh the static snapshot.
+When backend content changes, rebuilding/redeploying Cloudflare Pages is the
+expected freshness mechanism.
 
 ### Cloudflare Pages note
 
@@ -295,6 +299,9 @@ Simple — brand mark on the left, mono meta strip on the right:
 ## API Integration
 
 Public, read-only, JSON. Base path `/api/v1/public`. **Empty endpoints return 200 with `items: []` or `profile: null`** — handle both gracefully.
+No Firebase JWT is required for these public endpoints. Do not hardcode local,
+staging, or production backend URLs; use the Cloudflare Pages build-time
+environment value for the API base URL.
 
 ### Types (TypeScript)
 
@@ -428,4 +435,8 @@ docs/design/
         └── availability.json       ← matches GET /api/v1/public/properties/availability
 ```
 
-To run the reference locally: open `reference/index.html` in any modern browser. The vanilla JS at the bottom fetches the three mock JSONs from `./mock/*.json` and renders everything. Swap `API_BASE` to the real backend when integrating.
+To run the reference locally: open `reference/index.html` in any modern browser.
+The vanilla JS at the bottom fetches the three mock JSONs from `./mock/*.json`
+only so the design artifact can render standalone. Do not wire the production
+Astro site by swapping that prototype `API_BASE`; production integration should
+use build-time fetches from `BRAND_API_BASE_URL`.

@@ -2,10 +2,10 @@
 
 Public brand website frontend for the STDS property-management side project.
 
-This repository is planned as a lightweight Astro + TypeScript website focused
-on SEO, fast static delivery, and public-facing brand content. It is not the
-main STDS admin application. The site will consume a small readonly brand API
-for public profile, FAQ, and property availability content.
+This repository is a lightweight Astro + TypeScript website focused on SEO,
+fast static delivery, and public-facing brand content. It is not the main STDS
+admin application. The site consumes the core backend public readonly brand API
+at build time for public profile, FAQ, and property availability content.
 
 ## Project Role
 
@@ -30,9 +30,10 @@ stay static-first, SEO-friendly, and simple to deploy.
 - Small interactive islands only when needed
 - Build-time public API access through core backend public read-only endpoints
 
-The repository is currently in its initial setup phase. The first committed
-files define project direction, architecture boundaries, design references, test
-rules, and CI/CD expectations before the application scaffold is added.
+The repository is in its early Astro scaffold phase. Governance docs, design
+references, package scripts, and the first static homepage structure are present;
+the next integration slice should replace mock browser fetches with build-time
+API fetches.
 
 ## API Boundary
 
@@ -46,6 +47,9 @@ backend public namespace:
 The brand site should not consume admin APIs, tenant data, lease data, billing
 data, repair workflows, attachments, scheduler behavior, or direct database
 access.
+
+The brand site does not include booking, reservation, contact form submission,
+CMS, realtime availability, or any write API.
 
 ## Engineering Focus
 
@@ -75,5 +79,5 @@ The goal is a small but production-minded public website foundation:
 
 ## Status
 
-Early repository initialization. Application code, package scripts, hosting
-configuration, and CI workflows will be added in later implementation slices.
+Early Astro scaffold. Static app code and package scripts exist; CI workflow and
+build-time API integration remain later implementation slices.
