@@ -209,7 +209,7 @@ const PAGE_SIZE = 6;
 let _propsPage = 1;
 
 function drawPropsPage(){
-  const rows = Array.from(document.querySelectorAll('#props-list .prop-row'));
+  const rows = Array.from(document.querySelectorAll<HTMLElement>('#props-list .prop-row'));
   if (rows.length === 0) return;
 
   const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
@@ -223,9 +223,11 @@ function drawPropsPage(){
   const pager = document.getElementById('pager');
   const pageNow = document.getElementById('page-now');
   const pageTotal = document.getElementById('page-total');
-  const prevPage = document.getElementById('prev-page');
-  const nextPage = document.getElementById('next-page');
+  const prevPage = document.getElementById('prev-page') as HTMLButtonElement | null;
+  const nextPage = document.getElementById('next-page') as HTMLButtonElement | null;
   const shownRange = document.getElementById('shown-range');
+
+  if (!pager || !pageNow || !pageTotal || !prevPage || !nextPage || !shownRange) return;
 
   shownRange.textContent = `${start + 1}–${end}`;
 

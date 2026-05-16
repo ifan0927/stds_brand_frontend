@@ -65,6 +65,14 @@ slash is accepted and normalized. Local builds should pass both variables:
 SITE_URL=https://example.com BRAND_API_BASE_URL=http://localhost:8080 npm run build
 ```
 
+For local CI-equivalent build verification without calling a real backend, run
+the repo-owned public API fixture server in another shell:
+
+```sh
+PORT=4177 node scripts/brand-api-fixture.mjs
+SITE_URL=https://example.com BRAND_API_BASE_URL=http://127.0.0.1:4177 npm run build
+```
+
 ## Engineering Focus
 
 The goal is a small but production-minded public website foundation:
@@ -74,8 +82,7 @@ The goal is a small but production-minded public website foundation:
   variables
 - Clear separation from the main admin frontend
 - Thin build-time API client boundary over the core public brand API
-- Basic CI checks for type safety, tests, and production build once scripts
-  exist
+- Basic CI checks for type safety, tests, and production build
 - Minimal architecture that can be reviewed and evolved without framework
   sprawl
 
@@ -93,6 +100,6 @@ The goal is a small but production-minded public website foundation:
 
 ## Status
 
-Early Astro app. Static homepage code, package scripts, and build-time public
-API integration exist. CI workflow and broader smoke coverage remain later
-implementation slices.
+Early Astro app. Static homepage code, package scripts, build-time public API
+integration, and the first PR CI workflow exist. Broader smoke coverage remains
+a later implementation slice.

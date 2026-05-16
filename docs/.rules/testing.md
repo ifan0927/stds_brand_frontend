@@ -22,6 +22,8 @@ Once package scripts exist, the minimum future verification commands should be:
 
 - `npm run check` for Astro/TypeScript validation.
 - `npm test` for unit/component/API utility tests.
-- `npm run build` for production build and SEO/static rendering safety.
+- `npm run build` for production build and SEO/static rendering safety. When
+  the build needs public brand API data, point `BRAND_API_BASE_URL` at the
+  repo-owned local fixture server, not staging or production.
 
 If scripts differ, update this file and CI together so local and CI verification stay aligned.

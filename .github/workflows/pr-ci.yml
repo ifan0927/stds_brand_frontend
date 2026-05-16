@@ -1,0 +1,56 @@
+name: PR CI
+
+on:
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check Astro and TypeScript
+        run: npm run check
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Build with local public API fixture
+        env:
+          BRAND_API_BASE_URL: http://127.0.0.1:4177
+          SITE_URL: https://example.com
+          PORT: 4177
+        run: |
+          node scripts/brand-api-fixture.mjs &
+          fixture_pid=$!
+          cleanup() {
+            kill "$fixture_pid" 2>/dev/null || true
+            wait "$fixture_pid" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          for attempt in $(seq 1 30); do
+            if node -e "fetch('http://127.0.0.1:4177/api/v1/public/brand/profile').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"; then
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              echo "Fixture server did not become ready"
+              exit 1
+            fi
+            sleep 1
+          done
+
+          npm run build

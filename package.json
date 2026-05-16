@@ -4,10 +4,17 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
+    "check": "astro check",
+    "test": "vitest run",
     "build": "astro build",
     "preview": "astro preview"
   },
   "dependencies": {
     "astro": "^5.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.6"
   }
 }

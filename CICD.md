@@ -16,12 +16,12 @@ Do not use the brand frontend pipeline for backend migrations, admin workflow va
 
 ## PR Checks
 
-Once package scripts exist, PRs should run the minimal Astro project gate:
+PRs run the minimal Astro project gate:
 
 - Install dependencies with the project package manager lockfile.
-- Run `lint`.
+- Run `check`.
 - Run `test`.
-- Run `build`.
+- Run `build` against a local fixture server for the public brand API.
 
 The first CI version should stay small. Prefer fast checks that protect Astro rendering, TypeScript correctness, static output, and public-page regressions.
 
