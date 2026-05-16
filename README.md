@@ -30,11 +30,10 @@ stay static-first, SEO-friendly, and simple to deploy.
 - Small interactive islands only when needed
 - Build-time public API access through core backend public read-only endpoints
 
-The repository is in its early Astro scaffold phase. Governance docs, design
-references, package scripts, and the first static homepage structure are present;
-the current `/mock/*.json` browser fetches are a temporary pre-integration
-scaffold. The next integration slice should replace them with build-time API
-fetches from `BRAND_API_BASE_URL`.
+The repository is in its early Astro implementation phase. Governance docs,
+design references, package scripts, and the first static homepage structure are
+present. The homepage fetches public brand content from `BRAND_API_BASE_URL` at
+Astro build time and renders it into static HTML.
 
 ## API Boundary
 
@@ -56,6 +55,15 @@ Production brand data is fetched at Astro build time. Cloudflare Pages should
 provide `BRAND_API_BASE_URL` as the build-time API base URL for local, preview,
 staging, and production builds. Do not hardcode local, staging, production,
 Firebase, or Cloud Run URLs.
+
+`SITE_URL` is also required at build time for canonical URLs and absolute
+metadata. It is non-secret public configuration and must be an absolute origin
+URL with no path, query, or hash, for example `https://example.com`. A trailing
+slash is accepted and normalized. Local builds should pass both variables:
+
+```sh
+SITE_URL=https://example.com BRAND_API_BASE_URL=http://localhost:8080 npm run build
+```
 
 ## Engineering Focus
 
@@ -85,5 +93,6 @@ The goal is a small but production-minded public website foundation:
 
 ## Status
 
-Early Astro scaffold. Static app code and package scripts exist; CI workflow and
-build-time API integration remain later implementation slices.
+Early Astro app. Static homepage code, package scripts, and build-time public
+API integration exist. CI workflow and broader smoke coverage remain later
+implementation slices.

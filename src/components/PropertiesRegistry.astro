@@ -28,9 +28,9 @@ function splitAddress(address: string): { district: string; rest: string } {
       <p class="right">每一間物件皆由奕德親自驗收、簽約、代管，分布於大台南各行政區。</p>
     </div>
 
-    <div class="props-list" id="props-list">
+    <div class="props-list" id="props-list" aria-label="可入住物件列表">
       {sortedItems.length === 0 ? (
-        <p style="color:var(--muted);text-align:center;padding:64px 0;border-bottom:1px solid var(--hairline);">目前無可入住物件。</p>
+        <p role="status" style="color:var(--muted);text-align:center;padding:64px 0;border-bottom:1px solid var(--hairline);">目前無可入住物件。</p>
       ) : (
         sortedItems.map((item, index) => {
           const { district, rest } = splitAddress(item.address);

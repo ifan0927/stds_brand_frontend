@@ -116,6 +116,13 @@ not be committed.
 `BRAND_API_BASE_URL` is the build-time API base URL for the core backend public
 brand API.
 
+`SITE_URL` is the required build-time public origin URL for canonical links and
+absolute metadata URLs. It must be an absolute `http` or `https` origin with no
+path, query, or hash, for example `https://example.com`. A trailing slash is
+accepted and normalized. Missing or invalid `SITE_URL` should fail the build
+clearly so Cloudflare Pages staging and production do not publish ambiguous
+metadata.
+
 ## Testing And CI
 
 Keep CI basic at first:

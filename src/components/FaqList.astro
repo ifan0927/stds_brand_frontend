@@ -16,9 +16,9 @@ const { items } = Astro.props;
       </div>
       <p class="right">沒在下方找到答案？歡迎直接來電或寫信給我們，營業時間內快速回覆。</p>
     </div>
-    <div class="faq-list" id="faq-list">
+    <div class="faq-list" id="faq-list" aria-label="常見問題列表">
       {items.length === 0 ? (
-        <p style="color:var(--muted);text-align:center;padding:48px 0;">目前沒有常見問題。</p>
+        <p role="status" style="color:var(--muted);text-align:center;padding:48px 0;">目前沒有常見問題。</p>
       ) : (
         items.map((item, index) => (
           <details class="faq" open={index === 0}>

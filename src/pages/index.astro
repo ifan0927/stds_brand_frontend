@@ -7,18 +7,38 @@ import FaqList from '../components/FaqList.astro';
 import ContactBand from '../components/ContactBand.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import { fetchPublicBrandHomeData } from '../lib/api/brand';
+import {
+  buildFaqPageJsonLd,
+  buildLocalBusinessJsonLd,
+  getHomepageSeo,
+} from '../lib/seo/site';
 
 const { profile, faqs, availability } = await fetchPublicBrandHomeData();
+const seo = getHomepageSeo(profile);
+const faqJsonLd = buildFaqPageJsonLd(faqs);
+const localBusinessJsonLd = buildLocalBusinessJsonLd(profile, seo.canonicalUrl);
 ---
 <!doctype html>
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>奕德不動產 — 大台南包租代管</title>
+<title>{seo.title}</title>
+<meta name="description" content={seo.description} />
+<link rel="canonical" href={seo.canonicalUrl} />
+<meta property="og:title" content={seo.title} />
+<meta property="og:description" content={seo.description} />
+<meta property="og:type" content="website" />
+<meta property="og:url" content={seo.canonicalUrl} />
+<meta property="og:site_name" content={seo.brandName} />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content={seo.title} />
+<meta name="twitter:description" content={seo.description} />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Sans+TC:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+{faqJsonLd && <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />}
+{localBusinessJsonLd && <script type="application/ld+json" set:html={JSON.stringify(localBusinessJsonLd)} />}
 </head>
 <body>
 
