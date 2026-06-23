@@ -4,24 +4,6 @@ const port = Number.parseInt(process.env.PORT || '4177', 10);
 const host = '127.0.0.1';
 
 const fixtures = {
-  '/api/v1/public/brand/profile': {
-    profile: {
-      brand_name: '奕德不動產',
-      contact_phone: '06-123-4567',
-      contact_email: 'hello@example.com',
-      contact_address: '台南市東區測試路 1 號',
-      updated_at: '2026-05-16T00:00:00Z',
-    },
-  },
-  '/api/v1/public/brand/faqs': {
-    items: [
-      {
-        question: '包租代管適合誰？',
-        answer: '適合希望降低管理成本並穩定出租流程的房東。',
-        sort_order: 1,
-      },
-    ],
-  },
   '/api/v1/public/properties/availability': {
     items: [
       {
