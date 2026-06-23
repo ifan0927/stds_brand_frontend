@@ -20,17 +20,16 @@ This repo is an Astro + TypeScript public brand website for STDS. Optimize for c
 
 ## Backend API Boundary
 
-Use a narrow public API client boundary for the core backend public readonly
-brand endpoints:
+Use a narrow public API client boundary for the only core backend public
+readonly brand endpoint:
 
-- `GET /api/v1/public/brand/profile`
-- `GET /api/v1/public/brand/faqs`
 - `GET /api/v1/public/properties/availability`
 
-Production brand content should be fetched at Astro build time from
-`BRAND_API_BASE_URL`. Real users should not trigger runtime API calls to compose
-the core homepage content. The current `/mock/*.json` browser fetches are a
-temporary pre-integration scaffold, not the target staging architecture.
+TinaCMS owns brand profile, site settings, contact details, FAQ, page content,
+and news content. Real users should not trigger runtime API calls to compose
+core editorial content. The current legacy brand profile/FAQ API fixtures and
+single-page integration code are temporary pre-Tina migration scaffolding, not
+the target staging architecture.
 
 Centralize base URL handling, request helpers, response typing, and error mapping in a small API utility. Pages should consume typed functions, not hand-roll `fetch` options. Normal rendering should fail gracefully with useful public content behavior; do not expose internal backend errors to visitors.
 

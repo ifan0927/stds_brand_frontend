@@ -1,0 +1,114 @@
+{
+  "seoTitle": "奕德不動產 — 大台南包租代管",
+  "seoDescription": "奕德不動產深耕大台南，提供包租與代管服務。一份合約、雙向安心，房東收益穩定，房客住得放心。",
+  "hero": {
+    "eyebrow": "Tainan · Property Service",
+    "title": "把房子的事，交給更穩的人。",
+    "subtitle": "從招租、簽約到日常修繕，奕德用長期管理的角度，讓房東省心、房客安心。",
+    "image": "/uploads/hero/index-slider-1.jpg"
+  },
+  "dualEntry": [
+    {
+      "tag": "For 房客",
+      "title": "找一間，可以好好住下來的房子。",
+      "body": "我們整理可入住物件、協助看房與簽約，租期內也有固定窗口處理居住問題。",
+      "ctaLabel": "我是房客"
+    },
+    {
+      "tag": "For 房東",
+      "title": "把空房，換成穩定的月入。",
+      "body": "從包租、代管到日常租務，奕德協助您降低空置與管理成本。",
+      "ctaLabel": "我是房東"
+    }
+  ],
+  "about": {
+    "eyebrow": "— About 奕德",
+    "title": "不只是仲介，是長期的居住管家。",
+    "lede": "奕德不動產專注於大台南租賃住宅服務，協助房東把物件管理流程制度化，也讓房客在租期內有明確且穩定的服務窗口。",
+    "photo": "/uploads/trust/team-inan.jpg",
+    "ownerRole": "負責人",
+    "ownerName": "陳奕男 · Trust Estate",
+    "services": [
+      {
+        "title": "合法登記",
+        "body": "依租賃住宅服務業規範登記，合約、收付與管理流程皆可追溯。"
+      },
+      {
+        "title": "在地服務",
+        "body": "深耕大台南生活圈，熟悉東區、北區、中西區、安平、永康與仁德等租屋需求。"
+      },
+      {
+        "title": "雙向溝通",
+        "body": "房東與房客都由奕德統一協調，減少租期內資訊落差與臨時摩擦。"
+      },
+      {
+        "title": "長期維護",
+        "body": "從入住前整理到退租點交，用管理週期思維維持物件品質。"
+      }
+    ],
+    "quote": "我們相信好的租賃服務，不只是把房子租出去，而是讓每一段居住關係都能被妥善照顧。",
+    "quoteMeta": "奕德不動產 Trust Estate"
+  },
+  "interior": [
+    {
+      "image": "/uploads/interior/index-infobox-1.jpg",
+      "kicker": "01 · Light",
+      "caption": "明亮、乾淨、容易入住的空間狀態。"
+    },
+    {
+      "image": "/uploads/interior/index-infobox-2.jpg",
+      "kicker": "02 · Living",
+      "caption": "維持日常居住所需的基本品質。"
+    },
+    {
+      "image": "/uploads/interior/index-infobox-3.jpg",
+      "kicker": "03 · Detail",
+      "caption": "用細節降低入住與管理的摩擦。"
+    }
+  ],
+  "ctaBand": {
+    "eyebrow": "Service",
+    "title": "想把房子的事交給奕德？",
+    "subtitle": "無論您正在找房，或希望評估物件代管，我們都會先從需求與現況開始確認。",
+    "image": "/uploads/banners/banner-img-1.jpg",
+    "buttons": [
+      { "label": "預約諮詢", "href": "#contact" },
+      { "label": "看可入住物件", "href": "/tenant" }
+    ]
+  },
+  "credentials": {
+    "eyebrow": "— Registered",
+    "title": "合法登記，流程透明。",
+    "lede": "租賃住宅服務牽涉合約、金流與日常管理，奕德以合規與可追溯的方式建立信任。",
+    "items": [
+      {
+        "image": "/uploads/trust/cert-rental-service.jpg",
+        "kicker": "01",
+        "title": "租賃住宅服務業登記",
+        "body": "依法登記，提供包租與代管相關服務。"
+      },
+      {
+        "image": "/uploads/trust/cert-association.jpg",
+        "kicker": "02",
+        "title": "同業公會會員",
+        "body": "參與租賃住宅服務產業規範與交流。"
+      },
+      {
+        "image": "/uploads/trust/cert-rental.jpg",
+        "kicker": "03",
+        "title": "租賃住宅管理人員",
+        "body": "以專業流程協助房東與房客完成租務管理。"
+      }
+    ]
+  },
+  "faqIntro": {
+    "eyebrow": "— FAQ",
+    "title": "常見問題",
+    "lede": "先整理最常被詢問的租務、簽約與服務範圍問題，讓您快速判斷是否適合聯繫。"
+  },
+  "contact": {
+    "eyebrow": "— Contact",
+    "title": "有房要託管，或正在找房？",
+    "lede": "歡迎來電、來信或透過 LINE / Facebook 聯繫，我們會依您的需求安排後續說明。"
+  }
+}

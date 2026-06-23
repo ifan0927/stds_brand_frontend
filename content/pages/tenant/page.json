@@ -1,0 +1,20 @@
+{
+  "seoTitle": "我是房客 — 奕德不動產",
+  "seoDescription": "查看奕德不動產大台南可入住物件，預約賞屋並了解租期服務窗口。",
+  "head": {
+    "eyebrow": "For Tenants",
+    "title": "找一間，可以好好住下來的房子。",
+    "lede": "奕德整理可入住物件，協助看房、簽約與租期內的日常溝通，讓房客有穩定的居住服務窗口。"
+  },
+  "listIntro": {
+    "eyebrow": "Available Now",
+    "title": "出租物件一覽",
+    "lede": "物件列表由 STDS 後端 availability endpoint 於建置時提供，依可入住狀態優先排序。"
+  },
+  "cta": {
+    "eyebrow": "— Book a Viewing",
+    "title": "看到喜歡的物件了嗎？",
+    "body": "請填寫預約賞屋表單，我們會依物件狀態與您的時間安排後續聯繫。",
+    "ctaLabel": "前往預約賞屋表單"
+  }
+}
