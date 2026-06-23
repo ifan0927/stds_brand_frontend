@@ -1,8 +1,10 @@
 ---
-import type { BrandProfile } from '../lib/api/brand';
-
 type Props = {
-  profile: BrandProfile | null;
+  profile: {
+    contact_phone: string | null;
+    contact_email: string | null;
+    contact_address: string | null;
+  } | null;
 };
 
 const { profile } = Astro.props;

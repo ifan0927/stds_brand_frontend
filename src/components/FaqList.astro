@@ -1,8 +1,10 @@
 ---
-import type { FAQItem } from '../lib/api/brand';
-
 type Props = {
-  items: FAQItem[];
+  items: {
+    question: string;
+    answer: string;
+    sort_order: number;
+  }[];
 };
 
 const { items } = Astro.props;

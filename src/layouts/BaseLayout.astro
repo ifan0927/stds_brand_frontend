@@ -1,0 +1,48 @@
+---
+import type { PageMetadata } from '../lib/seo/site';
+
+type Props = {
+  metadata: PageMetadata;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[] | null;
+};
+
+const { metadata, structuredData = null } = Astro.props;
+const structuredDataItems = Array.isArray(structuredData)
+  ? structuredData
+  : structuredData
+    ? [structuredData]
+    : [];
+---
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{metadata.title}</title>
+    <meta name="description" content={metadata.description} />
+    <link rel="canonical" href={metadata.canonicalUrl} />
+    <meta property="og:title" content={metadata.title} />
+    <meta property="og:description" content={metadata.description} />
+    <meta property="og:type" content={metadata.ogType} />
+    <meta property="og:url" content={metadata.canonicalUrl} />
+    <meta property="og:site_name" content={metadata.siteName} />
+    {metadata.ogImageUrl && <meta property="og:image" content={metadata.ogImageUrl} />}
+    <meta name="twitter:card" content={metadata.ogImageUrl ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={metadata.title} />
+    <meta name="twitter:description" content={metadata.description} />
+    {metadata.ogImageUrl && <meta name="twitter:image" content={metadata.ogImageUrl} />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+    {structuredDataItems.map((item) => (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />
+    ))}
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+@import "../styles/base.css";
+</style>

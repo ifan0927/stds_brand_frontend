@@ -1,25 +1,52 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import {
-  buildFaqPageJsonLd,
-  buildLocalBusinessJsonLd,
-  getHomepageCanonicalUrl,
-  getHomepageSeo,
-} from './site';
+import { buildCanonicalUrl, buildPageMetadata } from './site';
 
 describe('site SEO helpers', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
   });
 
-  it('builds the homepage canonical URL from SITE_URL', () => {
+  it('builds route metadata with normalized SITE_URL and canonical path', () => {
     vi.stubEnv('SITE_URL', 'https://example.com/');
 
-    expect(getHomepageCanonicalUrl()).toBe('https://example.com/');
+    expect(
+      buildPageMetadata({
+        title: '我是房客',
+        description: '可入住物件與預約賞屋資訊',
+        path: '/tenant',
+        siteName: '奕德不動產',
+        ogImagePath: '/uploads/hero/index-slider-1.jpg',
+      }),
+    ).toEqual({
+      title: '我是房客',
+      description: '可入住物件與預約賞屋資訊',
+      canonicalUrl: 'https://example.com/tenant',
+      siteName: '奕德不動產',
+      ogType: 'website',
+      ogImageUrl: 'https://example.com/uploads/hero/index-slider-1.jpg',
+    });
+  });
+
+  it('falls back to default metadata when optional fields are blank', () => {
+    vi.stubEnv('SITE_URL', 'https://example.com');
+
+    expect(
+      buildPageMetadata({
+        title: ' ',
+        description: '',
+        siteName: null,
+      }),
+    ).toMatchObject({
+      title: '奕德不動產 — 大台南包租代管',
+      description: '奕德不動產深耕大台南，提供包租與代管服務。一份合約、雙向安心，房東收益穩定，房客住得放心。',
+      canonicalUrl: 'https://example.com/',
+      siteName: '奕德不動產',
+    });
   });
 
   it('fails clearly when SITE_URL is missing', () => {
-    expect(() => getHomepageCanonicalUrl()).toThrow(
+    expect(() => buildCanonicalUrl('/')).toThrow(
       'Missing required build-time environment variable SITE_URL',
     );
   });
@@ -27,57 +54,40 @@ describe('site SEO helpers', () => {
   it('fails clearly when SITE_URL is not an origin URL', () => {
     vi.stubEnv('SITE_URL', 'https://example.com/path');
 
-    expect(() => getHomepageCanonicalUrl()).toThrow(
+    expect(() => buildCanonicalUrl('/')).toThrow(
       'Invalid SITE_URL: expected an origin URL with no path, query, or hash',
     );
   });
 
-  it('uses the public profile brand name in homepage metadata', () => {
+  it('rejects canonical paths with queries or hashes', () => {
     vi.stubEnv('SITE_URL', 'https://example.com');
 
-    expect(
-      getHomepageSeo({
-        brand_name: '測試品牌',
-        contact_phone: null,
-        contact_email: null,
-        contact_address: null,
-        updated_at: '2026-05-16T00:00:00Z',
+    expect(() => buildCanonicalUrl('/tenant?preview=true')).toThrow(
+      'Invalid canonical path: expected no query string or hash',
+    );
+    expect(() => buildCanonicalUrl('/tenant#faq')).toThrow(
+      'Invalid canonical path: expected no query string or hash',
+    );
+  });
+
+  it('rejects non-root-relative canonical paths', () => {
+    vi.stubEnv('SITE_URL', 'https://example.com');
+
+    expect(() => buildCanonicalUrl('tenant')).toThrow(
+      'Invalid canonical path: expected a root-relative path such as /tenant',
+    );
+    expect(() => buildCanonicalUrl('//evil.example/tenant')).toThrow(
+      'Invalid canonical path: expected a root-relative path such as /tenant',
+    );
+  });
+
+  it('rejects protocol-relative metadata image paths', () => {
+    vi.stubEnv('SITE_URL', 'https://example.com');
+
+    expect(() =>
+      buildPageMetadata({
+        ogImagePath: '//evil.example/image.jpg',
       }),
-    ).toMatchObject({
-      canonicalUrl: 'https://example.com/',
-      brandName: '測試品牌',
-    });
-  });
-
-  it('omits FAQPage JSON-LD when there are no FAQ items', () => {
-    expect(buildFaqPageJsonLd([])).toBeNull();
-  });
-
-  it('builds FAQPage JSON-LD from build-time FAQ items', () => {
-    expect(
-      buildFaqPageJsonLd([
-        {
-          question: '包租代管適合誰？',
-          answer: '適合希望降低管理成本並穩定出租流程的房東。',
-          sort_order: 1,
-        },
-      ]),
-    ).toMatchObject({
-      '@type': 'FAQPage',
-      mainEntity: [
-        {
-          '@type': 'Question',
-          name: '包租代管適合誰？',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: '適合希望降低管理成本並穩定出租流程的房東。',
-          },
-        },
-      ],
-    });
-  });
-
-  it('omits LocalBusiness JSON-LD when profile data is empty', () => {
-    expect(buildLocalBusinessJsonLd(null, 'https://example.com/')).toBeNull();
+    ).toThrow('Invalid metadata URL path: expected an absolute URL or root-relative path');
   });
 });

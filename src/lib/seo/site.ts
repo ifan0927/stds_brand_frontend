@@ -1,30 +1,49 @@
-import type { BrandProfile, FAQItem } from '../api/brand';
+export const DEFAULT_SITE_NAME = '奕德不動產';
+export const DEFAULT_SITE_TITLE = '奕德不動產 — 大台南包租代管';
+export const DEFAULT_SITE_DESCRIPTION =
+  '奕德不動產深耕大台南，提供包租與代管服務。一份合約、雙向安心，房東收益穩定，房客住得放心。';
 
-export const SITE_TITLE = '奕德不動產 — 大台南包租代管';
-export const SITE_DESCRIPTION =
-  '奕德不動產深耕大台南，提供包租與代管服務。一份合約、雙向安心——房東收益穩定，房客住得放心。';
-export const FALLBACK_BRAND_NAME = '奕德不動產';
+export type PageMetadataInput = {
+  title?: string | null;
+  description?: string | null;
+  path?: string;
+  siteName?: string | null;
+  ogImagePath?: string | null;
+  ogType?: 'website' | 'article';
+};
 
-export type HomepageSeo = {
+export type PageMetadata = {
   title: string;
   description: string;
   canonicalUrl: string;
-  brandName: string;
+  siteName: string;
+  ogType: 'website' | 'article';
+  ogImageUrl: string | null;
 };
 
-export function getHomepageSeo(profile: BrandProfile | null): HomepageSeo {
-  const canonicalUrl = getHomepageCanonicalUrl();
+export function buildPageMetadata(input: PageMetadataInput = {}): PageMetadata {
+  const canonicalUrl = buildCanonicalUrl(input.path ?? '/');
 
   return {
-    title: SITE_TITLE,
-    description: SITE_DESCRIPTION,
+    title: normalizeText(input.title) ?? DEFAULT_SITE_TITLE,
+    description: normalizeText(input.description) ?? DEFAULT_SITE_DESCRIPTION,
     canonicalUrl,
-    brandName: profile?.brand_name || FALLBACK_BRAND_NAME,
+    siteName: normalizeText(input.siteName) ?? DEFAULT_SITE_NAME,
+    ogType: input.ogType ?? 'website',
+    ogImageUrl: input.ogImagePath ? buildAbsoluteUrl(input.ogImagePath) : null,
   };
 }
 
-export function getHomepageCanonicalUrl(): string {
-  return new URL('/', getSiteOrigin()).toString();
+export function buildCanonicalUrl(path: string): string {
+  if (!path.startsWith('/') || path.startsWith('//')) {
+    throw new Error('Invalid canonical path: expected a root-relative path such as /tenant');
+  }
+
+  if (path.includes('?') || path.includes('#')) {
+    throw new Error('Invalid canonical path: expected no query string or hash');
+  }
+
+  return new URL(path, getSiteOrigin()).toString();
 }
 
 export function getSiteOrigin(): string {
@@ -51,39 +70,23 @@ export function getSiteOrigin(): string {
   return url.origin;
 }
 
-export function buildFaqPageJsonLd(faqs: FAQItem[]): Record<string, unknown> | null {
-  if (faqs.length === 0) return null;
-
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqs.map((item) => ({
-      '@type': 'Question',
-      name: item.question,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: item.answer,
-      },
-    })),
-  };
+function buildAbsoluteUrl(pathOrUrl: string): string {
+  try {
+    const url = new URL(pathOrUrl);
+    if (!['http:', 'https:'].includes(url.protocol)) {
+      throw new Error('Invalid absolute metadata URL');
+    }
+    return url.toString();
+  } catch {
+    if (!pathOrUrl.startsWith('/') || pathOrUrl.startsWith('//')) {
+      throw new Error('Invalid metadata URL path: expected an absolute URL or root-relative path');
+    }
+    return new URL(pathOrUrl, getSiteOrigin()).toString();
+  }
 }
 
-export function buildLocalBusinessJsonLd(
-  profile: BrandProfile | null,
-  canonicalUrl: string,
-): Record<string, unknown> | null {
-  if (!profile) return null;
-
-  const data: Record<string, unknown> = {
-    '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
-    name: profile.brand_name,
-    url: canonicalUrl,
-  };
-
-  if (profile.contact_phone) data.telephone = profile.contact_phone;
-  if (profile.contact_email) data.email = profile.contact_email;
-  if (profile.contact_address) data.address = profile.contact_address;
-
-  return data;
+function normalizeText(value: string | null | undefined): string | null {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed === '' ? null : trimmed;
 }
