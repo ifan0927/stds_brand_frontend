@@ -110,6 +110,8 @@ Expected shape:
   rebuilds.
 - Public content freshness requires a Cloudflare Pages rebuild/redeploy because
   Tina content and availability snapshots are captured at build time.
+- TinaCMS admin assets are generated during `npm run build` and copied into the
+  static `dist/admin` output; generated admin assets are not source files.
 
 No Firebase Hosting brand rewrite or runtime backend proxy is required for the
 active architecture. The brand site does not depend on `stds_brand_backend` or a
@@ -139,6 +141,10 @@ path, query, or hash, for example `https://example.com`. A trailing slash is
 accepted and normalized. Missing or invalid `SITE_URL` should fail the build
 clearly so Cloudflare Pages staging and production do not publish ambiguous
 metadata.
+
+The initial TinaCMS foundation is local-first and does not select TinaCloud
+credential environment variable names. Document those names only when the
+operator/editor workflow is implemented.
 
 ## Testing And CI
 

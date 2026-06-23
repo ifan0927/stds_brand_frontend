@@ -4,6 +4,8 @@ node_modules/
 # Astro and build output
 .astro/
 dist/
+public/admin/
+tina/__generated__/
 
 # Test and coverage output
 coverage/
