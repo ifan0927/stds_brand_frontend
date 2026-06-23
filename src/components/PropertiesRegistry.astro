@@ -1,16 +1,22 @@
 ---
-import type { PropertyAvailabilityItem } from '../lib/api/brand';
+import { sortAvailabilityForDisplay, type PropertyAvailabilityItem } from '../lib/api/brand';
+
+type Intro = {
+  eyebrow: string;
+  title: string;
+  lede: string;
+};
 
 type Props = {
   items: PropertyAvailabilityItem[];
+  intro: Intro;
 };
 
-const PAGE_SIZE = 6;
-const { items } = Astro.props;
-const sortedItems = [...items].sort((a, b) => Number(b.has_vacant_room) - Number(a.has_vacant_room));
+const PAGE_SIZE = 8;
+const { items, intro } = Astro.props;
+const sortedItems = sortAvailabilityForDisplay(items);
 const totalPages = Math.max(1, Math.ceil(sortedItems.length / PAGE_SIZE));
 const vacantCount = sortedItems.filter((item) => item.has_vacant_room).length;
-const firstPageCount = Math.min(PAGE_SIZE, sortedItems.length);
 
 function splitAddress(address: string): { district: string; rest: string } {
   const match = address.match(/^(.+?[市縣].+?[區鄉鎮市])(.*)$/);
@@ -18,202 +24,293 @@ function splitAddress(address: string): { district: string; rest: string } {
   return { district: '', rest: address };
 }
 ---
-<section class="band" id="properties">
+<section class="tenant-properties" aria-labelledby="tenant-properties-title">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head row">
       <div>
-        <div class="label">— 目前可入住</div>
-        <h2>正在<em>等你的</em><br>下一個家。</h2>
+        <p class="eyebrow">— {intro.eyebrow}</p>
+        <h2 id="tenant-properties-title">{intro.title}</h2>
+        <span class="section-rule" aria-hidden="true"></span>
       </div>
-      <p class="right">每一間物件皆由奕德親自驗收、簽約、代管，分布於大台南各行政區。</p>
+      <p class="section-lede">{intro.lede}</p>
     </div>
 
-    <div class="props-list" id="props-list" aria-label="可入住物件列表">
+    <div class="props is-static" id="props-list" aria-label="出租物件一覽">
       {sortedItems.length === 0 ? (
-        <p role="status" style="color:var(--muted);text-align:center;padding:64px 0;border-bottom:1px solid var(--hairline);">目前無可入住物件。</p>
+        <p class="props-empty" role="status">目前無可入住物件。</p>
       ) : (
         sortedItems.map((item, index) => {
           const { district, rest } = splitAddress(item.address);
           return (
-            <div class="prop-row" data-id={item.property_id} data-page={Math.floor(index / PAGE_SIZE) + 1} style={index >= PAGE_SIZE ? 'display:none' : undefined}>
-              <span class="idx">{String(index + 1).padStart(2, '0')}</span>
+            <div class="prop-row" data-page={Math.floor(index / PAGE_SIZE) + 1}>
+              <span class="idx">No.{String(index + 1).padStart(2, '0')}</span>
               <span class="name">{item.property_public_name}</span>
               <span class="addr"><span class="district">{district}</span>{rest}</span>
               <span class:list={['prop-chip', { full: !item.has_vacant_room }]}>
-                <span class="pip"></span>
+                <span class="pip" aria-hidden="true"></span>
                 {item.has_vacant_room ? '可入住' : '滿房'}
               </span>
-              <span class="arrow">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-              </span>
+              <span aria-hidden="true"></span>
             </div>
           );
         })
       )}
     </div>
+
     <div class="props-foot" id="props-foot" style={sortedItems.length === 0 ? 'visibility:hidden' : undefined}>
-      <span class="count">
-        共 <em id="vacant-count">{vacantCount}</em> 間可入住 · 顯示 <span id="shown-range">1–{firstPageCount}</span> / <span id="props-total">{sortedItems.length}</span> 間
+      <span class="count" id="props-count">
+        共 <em>{vacantCount}</em> 間可入住 · <span id="range-copy">共 {sortedItems.length} 間</span>
       </span>
-      <div class="pager" id="pager" hidden={totalPages <= 1}>
+      <div class="pager" id="pager" hidden>
         <button type="button" id="prev-page" aria-label="上一頁">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M11 5l-7 7 7 7"></path></svg>
         </button>
         <span class="pos"><em id="page-now">1</em> / <span id="page-total">{totalPages}</span></span>
         <button type="button" id="next-page" aria-label="下一頁">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
         </button>
       </div>
     </div>
   </div>
 </section>
 
-<style is:global>
-/* ---------- properties (editorial registry) ---------- */
-.props-list{
-  border-top: 1px solid var(--hairline);
+<style>
+.tenant-properties {
+  padding: var(--section-y-lg) 0;
 }
-.prop-row{
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+
+.eyebrow {
+  margin: 0 0 16px;
+  color: var(--color-brand-strong);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.section-head h2 {
+  max-width: 18ch;
+  margin: 0;
+  color: var(--color-heading);
+  font-size: clamp(32px, 4vw, var(--text-4xl));
+  font-weight: 600;
+  line-height: 1.12;
+}
+
+.section-rule {
+  display: block;
+  width: 72px;
+  height: 3px;
+  margin-top: 24px;
+  background: var(--color-brand);
+}
+
+.section-lede {
+  max-width: 420px;
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  line-height: 1.8;
+}
+
+.props {
+  border-top: 1px solid var(--color-hairline);
+}
+
+.prop-row {
   display: grid;
-  grid-template-columns: 56px 1fr 1.1fr 110px 28px;
+  grid-template-columns: 64px max-content minmax(160px, max-content) 110px 1fr;
   align-items: center;
-  gap: 24px;
-  padding: 22px 12px 22px 4px;
-  border-bottom: 1px solid var(--hairline);
-  cursor: pointer;
-  transition: background .18s ease, padding .18s ease;
+  column-gap: 36px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--color-hairline);
 }
-.prop-row:hover{ background: var(--surface-soft); padding-left: 16px; }
-.prop-row .idx{
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--muted);
-  letter-spacing: 1px;
-}
-.prop-row .name{
-  font-family: var(--serif);
-  font-size: 28px;
-  line-height: 1.1;
-  letter-spacing: -.3px;
-  color: var(--ink);
-}
-.prop-row .addr{
-  font-size: 14.5px;
-  color: var(--body);
-}
-.prop-row .addr .district{
-  color: var(--muted);
-  margin-right: 6px;
-}
-.prop-chip{
-  justify-self: start;
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 12px 6px 10px;
-  border-radius: var(--r-pill);
-  background: var(--canvas);
-  border: 1px solid var(--hairline);
-  font-size: 12.5px; font-weight: 500;
-  color: var(--ink);
+
+.idx {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
   white-space: nowrap;
 }
-.prop-chip .pip{
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--leaf);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--leaf) 18%, transparent);
+
+.name {
+  color: var(--color-heading);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  line-height: 1.15;
+  white-space: nowrap;
 }
-.prop-chip.full{ color: var(--muted); background: transparent; }
-.prop-chip.full .pip{ background: var(--muted-soft); box-shadow: none; }
-.prop-row .arrow{
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--hairline);
-  display: inline-flex; align-items: center; justify-content: center;
-  color: var(--muted);
-  transition: transform .18s ease, background .18s ease, color .18s ease, border-color .18s ease;
+
+.addr {
+  color: var(--color-text);
+  font-size: 14.5px;
 }
-.prop-row:hover .arrow{
-  background: var(--ink); color: var(--canvas); border-color: var(--ink);
-  transform: translateX(2px);
+
+.district {
+  margin-right: 6px;
+  color: var(--color-text-muted);
 }
-.props-foot{
-  display: flex; justify-content: space-between; align-items: center;
-  margin-top: 24px;
-  font-family: var(--mono);
+
+.prop-chip {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 10px;
+  color: var(--color-heading);
+  font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--muted);
-  letter-spacing: 0.6px;
+  font-weight: 500;
+  border: 1px solid var(--color-hairline);
+  border-radius: 999px;
+  background: var(--color-white);
+  white-space: nowrap;
+}
+
+.pip {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-brand-strong);
+  box-shadow: 0 0 0 3px rgba(217, 156, 9, .15);
+}
+
+.prop-chip.full {
+  color: var(--color-text-soft);
+  background: transparent;
+}
+
+.prop-chip.full .pip {
+  background: var(--color-text-muted);
+  box-shadow: none;
+}
+
+.props-empty {
+  margin: 0;
+  padding: 64px 0;
+  color: var(--color-text-soft);
+  text-align: center;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.props-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
+  margin-top: 24px;
+  color: var(--color-text-soft);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
 }
-.props-foot .count em{
+
+.props-foot em {
+  color: var(--color-brand-strong);
   font-style: normal;
-  color: var(--accent-deep);
   font-weight: 500;
 }
-.pager{
-  display: inline-flex; align-items: center; gap: 6px;
+
+.pager {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
-.pager button{
-  width: 32px; height: 32px;
+
+.pager button {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-heading);
+  border: 1px solid var(--color-hairline);
   border-radius: 50%;
-  border: 1px solid var(--hairline);
-  background: var(--canvas);
-  display: inline-flex; align-items: center; justify-content: center;
-  color: var(--ink);
+  background: var(--color-white);
   transition: background .15s ease, border-color .15s ease, color .15s ease, opacity .15s ease;
 }
-.pager button:hover:not(:disabled){ background: var(--ink); color: var(--canvas); border-color: var(--ink); }
-.pager button:disabled{ opacity: .35; cursor: not-allowed; }
-.pager .pos{
+
+.pager button:hover:not(:disabled) {
+  color: var(--color-white);
+  border-color: var(--color-heading);
+  background: var(--color-heading);
+}
+
+.pager button:disabled {
+  cursor: not-allowed;
+  opacity: .35;
+}
+
+.pos {
   margin: 0 10px;
-  font-family: var(--mono);
-  font-size: 12.5px;
-  color: var(--ink);
-  letter-spacing: 0.6px;
+  color: var(--color-heading);
 }
-.pager .pos em{
-  font-style: normal;
-  color: var(--accent-deep);
-  font-weight: 500;
-}
-@media (max-width: 820px){
-  .prop-row{
-    grid-template-columns: 40px 1fr 96px;
-    grid-template-areas:
-      "idx  name  chip"
-      "idx  addr  arrow";
-    row-gap: 6px;
-    padding: 20px 8px;
+
+@media (max-width: 820px) {
+  .tenant-properties {
+    padding: var(--section-y-mobile) 0;
   }
-  .prop-row .idx{ grid-area: idx; align-self: start; padding-top: 6px; }
-  .prop-row .name{ grid-area: name; font-size: 22px; }
-  .prop-row .addr{ grid-area: addr; font-size: 13.5px; }
-  .prop-chip{ grid-area: chip; justify-self: end; }
-  .prop-row .arrow{ grid-area: arrow; justify-self: end; }
-}
-/* skeleton row */
-.prop-row-skel{
-  height: 76px;
-  border-bottom: 1px solid var(--hairline);
-  background: linear-gradient(90deg,
-    transparent 0%,
-    color-mix(in oklab, var(--surface-soft) 60%, transparent) 50%,
-    transparent 100%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
+
+  .section-head {
+    margin-bottom: 36px;
+  }
+
+  .prop-row {
+    grid-template-columns: 52px minmax(0, 1fr) 96px;
+    grid-template-areas:
+      "idx name chip"
+      "idx addr chip";
+    row-gap: 6px;
+    column-gap: 16px;
+    padding: 20px 0;
+  }
+
+  .idx {
+    grid-area: idx;
+    align-self: start;
+    padding-top: 6px;
+  }
+
+  .name {
+    grid-area: name;
+    font-size: var(--text-xl);
+    white-space: normal;
+  }
+
+  .addr {
+    grid-area: addr;
+    font-size: 13.5px;
+  }
+
+  .prop-chip {
+    grid-area: chip;
+    justify-self: end;
+  }
 }
 </style>
 
 <script>
-const PAGE_SIZE = 6;
-let _propsPage = 1;
+const PAGE_SIZE = 8;
+let currentPage = 1;
 
-function drawPropsPage(){
+function drawPropsPage() {
   const rows = Array.from(document.querySelectorAll<HTMLElement>('#props-list .prop-row'));
   if (rows.length === 0) return;
 
   const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
-  const start = (_propsPage - 1) * PAGE_SIZE;
+  const start = (currentPage - 1) * PAGE_SIZE;
   const end = Math.min(start + PAGE_SIZE, rows.length);
 
   rows.forEach((row, index) => {
@@ -225,36 +322,37 @@ function drawPropsPage(){
   const pageTotal = document.getElementById('page-total');
   const prevPage = document.getElementById('prev-page') as HTMLButtonElement | null;
   const nextPage = document.getElementById('next-page') as HTMLButtonElement | null;
-  const shownRange = document.getElementById('shown-range');
+  const rangeCopy = document.getElementById('range-copy');
 
-  if (!pager || !pageNow || !pageTotal || !prevPage || !nextPage || !shownRange) return;
+  if (!pager || !pageNow || !pageTotal || !prevPage || !nextPage || !rangeCopy) return;
 
-  shownRange.textContent = `${start + 1}–${end}`;
+  rangeCopy.textContent = `顯示 ${start + 1}-${end} / ${rows.length} 間`;
 
-  if (totalPages > 1){
+  if (totalPages > 1) {
     pager.hidden = false;
-    pageNow.textContent = String(_propsPage);
+    pageNow.textContent = String(currentPage);
     pageTotal.textContent = String(totalPages);
-    prevPage.disabled = _propsPage <= 1;
-    nextPage.disabled = _propsPage >= totalPages;
+    prevPage.disabled = currentPage <= 1;
+    nextPage.disabled = currentPage >= totalPages;
   } else {
     pager.hidden = true;
   }
 }
 
 document.getElementById('prev-page')?.addEventListener('click', () => {
-  if (_propsPage > 1){
-    _propsPage -= 1;
+  if (currentPage > 1) {
+    currentPage -= 1;
     drawPropsPage();
-    document.getElementById('properties').scrollIntoView({ behavior: 'instant', block: 'start' });
+    document.getElementById('props-list')?.scrollIntoView({ behavior: 'instant', block: 'start' });
   }
 });
+
 document.getElementById('next-page')?.addEventListener('click', () => {
-  const total = Math.ceil(document.querySelectorAll('#props-list .prop-row').length / PAGE_SIZE);
-  if (_propsPage < total){
-    _propsPage += 1;
+  const totalPages = Math.ceil(document.querySelectorAll('#props-list .prop-row').length / PAGE_SIZE);
+  if (currentPage < totalPages) {
+    currentPage += 1;
     drawPropsPage();
-    document.getElementById('properties').scrollIntoView({ behavior: 'instant', block: 'start' });
+    document.getElementById('props-list')?.scrollIntoView({ behavior: 'instant', block: 'start' });
   }
 });
 

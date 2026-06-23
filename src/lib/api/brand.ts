@@ -16,6 +16,18 @@ export async function fetchPropertyAvailability(): Promise<PropertyAvailabilityI
   return response.items;
 }
 
+export function sortAvailabilityForDisplay(
+  items: PropertyAvailabilityItem[],
+): PropertyAvailabilityItem[] {
+  return items
+    .map((item, index) => ({ item, index }))
+    .sort((a, b) => {
+      const availabilityRank = Number(b.item.has_vacant_room) - Number(a.item.has_vacant_room);
+      return availabilityRank || a.index - b.index;
+    })
+    .map(({ item }) => item);
+}
+
 async function fetchJson<T>(
   path: string,
   validate: (value: unknown) => value is T,
