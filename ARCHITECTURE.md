@@ -2,42 +2,48 @@
 
 ## Purpose
 
-This repo is the public STDS brand website frontend for
-the STDS core backend public brand API. It should be optimized for SEO, fast
-first load, and simple build-time content consumption.
+This repo is the public STDS brand website frontend. It should be optimized for
+SEO, fast first load, and simple build-time content consumption.
 
 Use Astro + TypeScript. Treat this as a brand/SEO website, not an admin SPA.
-`AGENTS.md` defines working behavior, `DESIGN.md` defines product/design
-direction, and this file defines implementation boundaries.
+`AGENTS.md` defines working behavior. `design_handoff_yide_site` is the current
+product, page, visual, and TinaCMS content source of truth; this file defines
+implementation and deployment boundaries.
 
 When present, follow:
 
 - `docs/.rules/coding-style.md`
 - `docs/.rules/testing.md`
 - `CICD.md`
-- Backend API contract:
-  `~/stds_backend` core public brand endpoints from
-  `https://github.com/ifan0927/STDS_backend_go/issues/209`
+- Current design handoff:
+  `design_handoff_yide_site/README.md` and
+  `design_handoff_yide_site/CONTENT-MODEL.md`
+- Backend API contract for property availability:
+  `GET /api/v1/public/properties/availability`
 
 ## Rendering Boundary
 
 Default to static Astro pages for crawlable public content.
 
-Use build-time data fetches for profile, FAQ, and availability content. Use SSR
-only if a later issue accepts runtime freshness requirements that static
-generation cannot meet.
+Use build-time content reads for TinaCMS editorial content and build-time data
+fetches for property availability. Use SSR only if a later issue accepts runtime
+freshness requirements that static generation cannot meet.
 
 Client-side JavaScript should be limited to small interactive islands, for
 example filters, accordions, or contact form affordances. Do not move core page
 content behind client-only rendering.
 
-## Public API Boundary
+## Content And Public API Boundary
 
-The frontend may read only the public readonly JSON endpoints exposed by the
-core backend:
+The target content architecture follows the handoff:
 
-- `GET /api/v1/public/brand/profile`
-- `GET /api/v1/public/brand/faqs`
+- TinaCMS owns editorial copy, images, site settings, contact details, FAQ, and
+  news/blog content.
+- The STDS backend owns property availability only.
+
+The frontend may read only this public readonly JSON endpoint from the core
+backend:
+
 - `GET /api/v1/public/properties/availability`
 
 The frontend must not depend on core STDS operational tables, admin endpoints,
@@ -45,9 +51,10 @@ tenant data, lease data, billing data, repair data, attachments, or scheduler
 behavior. Data ownership stays in the backend and its approved brand-facing
 views.
 
-Frontend API code should be a thin typed build-time wrapper around these public
-endpoints. Do not introduce a generated client in the current documentation
-alignment stage; a later issue can evaluate one if it becomes useful.
+Frontend API code should be a thin typed build-time wrapper around this public
+availability endpoint. Do not introduce a generated client in the current
+documentation alignment stage; a later issue can evaluate one if it becomes
+useful.
 
 ## Suggested Source Layout
 
@@ -60,8 +67,9 @@ src/
   layouts/        Shared page shells and document metadata
   components/     Reusable presentational components
   lib/api/        Typed public API fetch helpers
+  lib/content/    Tina/content loading helpers when shared logic is useful
   lib/seo/        Title, meta, canonical, and structured-data helpers
-  styles/         Global styles and design tokens from DESIGN.md
+  styles/         Global styles and design tokens from the current handoff
   test/           Test helpers only when shared test setup exists
 ```
 
@@ -70,11 +78,12 @@ useful.
 
 ## SEO Principles
 
-- Prefer semantic HTML with real headings, links, addresses, FAQ content, and
-  property summaries in the server-rendered or static HTML.
+- Prefer semantic HTML with real headings, links, addresses, FAQ content, news
+  articles, and property summaries in the server-rendered or static HTML.
 - Every route should own its title, description, canonical URL, Open Graph data,
   and useful structured data where appropriate.
-- Avoid client-only content for profile, FAQ, and availability summaries.
+- Avoid client-only content for Tina editorial content, FAQ, news, and
+  availability summaries.
 - Keep images optimized with explicit dimensions, descriptive alt text, and no
   layout shift.
 - Preserve accessible content and navigation before adding visual effects.
@@ -94,11 +103,13 @@ Expected shape:
   production promotion is introduced.
 - Cloudflare Pages may provide pull-request preview deployments, but they are
   temporary previews and not the staging environment.
-- The Astro build fetches brand data from the configured core backend public
-  API base URL.
-- A protected Cloudflare Pages deploy hook can trigger scheduled rebuilds.
+- The Astro build reads TinaCMS editorial content from repo-backed content and
+  fetches property availability from the configured core backend public API base
+  URL.
+- A protected Cloudflare Pages deploy hook can trigger scheduled or CMS-driven
+  rebuilds.
 - Public content freshness requires a Cloudflare Pages rebuild/redeploy because
-  the profile, FAQ, and availability content is captured at build time.
+  Tina content and availability snapshots are captured at build time.
 
 No Firebase Hosting brand rewrite or runtime backend proxy is required for the
 active architecture. The brand site does not depend on `stds_brand_backend` or a
@@ -120,7 +131,7 @@ configuration must not contain secrets. Deploy hook URLs are secrets and must
 not be committed.
 
 `BRAND_API_BASE_URL` is the build-time API base URL for the core backend public
-brand API.
+availability API.
 
 `SITE_URL` is the required build-time public origin URL for canonical links and
 absolute metadata URLs. It must be an absolute `http` or `https` origin with no
@@ -140,8 +151,8 @@ Keep CI basic at first:
 - build check
 
 Add browser tests only for high-value public flows after the Astro app exists,
-such as home page render, FAQ visibility, property availability render, and
-basic metadata presence.
+such as home page render, FAQ visibility, news list/detail render, property
+availability render, and basic metadata presence.
 
 ## Non-Goals
 
@@ -154,5 +165,6 @@ basic metadata presence.
 - No booking, reservation, public contact-form submission, or other write API.
 - No realtime availability contract; published availability is a build-time
   snapshot until a later issue changes that architecture.
-- No speculative CMS, generated client, or multi-tenant architecture until a
-  concrete issue requires it.
+- No backend ownership of editorial brand content after the TinaCMS migration.
+- No generated client or multi-tenant architecture until a concrete issue
+  requires it.

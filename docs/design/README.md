@@ -1,5 +1,10 @@
 # Handoff — 奕德不動產 品牌官網（首頁）
 
+> Historical reference only. The current accepted handoff is
+> `design_handoff_yide_site/`, which defines the multi-page design, TinaCMS
+> content model, and backend availability-only data boundary. Use this directory
+> only when inspecting the earlier single-page prototype.
+
 ## Overview
 
 A single-page marketing site for **奕德不動產 (Yi-De Real Estate)**, a 包租代管 (rental management / sub-let) service operating in 大台南 (Greater Tainan). The page serves two audiences simultaneously:

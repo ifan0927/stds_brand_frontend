@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>最新消息 — 奕德不動產</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles/yide-v2.css">
+<link rel="stylesheet" href="styles/yide-v2-sections.css">
+<link rel="stylesheet" href="styles/yide-v2-assets.css">
+<link rel="stylesheet" href="styles/yide-v2-news.css">
+</head>
+<body>
+
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+    <rect width="200" height="200" fill="#FAFBFC"/>
+    <rect x="0" y="0" width="200" height="6" fill="#DAC858"/>
+    <g transform="translate(60,60)" fill="none" stroke="#5a5655" stroke-width="3">
+      <rect x="0" y="0" width="80" height="80" rx="2"/>
+      <line x1="12" y1="22" x2="68" y2="22"/>
+      <line x1="12" y1="38" x2="58" y2="38"/>
+      <line x1="12" y1="54" x2="62" y2="54"/>
+    </g>
+    <rect x="60" y="60" width="80" height="4" fill="#DAC858"/>
+  </svg>
+</template>
+
+<!-- ============== HEADER ============== -->
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand-mark" href="index-v2.html" aria-label="奕德不動產 首頁">
+      <img class="brand-logo" src="uploads/logos/logo-main-1.png" alt="奕德不動產 Trust Estate">
+    </a>
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-label="開啟選單" aria-expanded="false" aria-controls="primary-nav">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="primary-nav" id="primary-nav" aria-label="主選單">
+      <a href="#" data-route="list" class="is-active">最新消息</a>
+      <a href="index-v2.html#about">關於奕德</a>
+      <a href="tenant.html">我是房客</a>
+      <a href="landlord.html">我是房東</a>
+      <a href="https://docs.google.com/forms/" data-yide="form-viewing">預約賞屋</a>
+      <div class="nav-dd">
+        <button class="nav-dd-trigger" type="button" aria-expanded="false">
+          聯絡我們
+          <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="nav-dd-menu" role="menu">
+          <a href="#" data-yide="line" role="menuitem"><span class="ico">LINE</span> 官方帳號</a>
+          <a href="#" data-yide="fb" role="menuitem"><span class="ico">FB</span> 不動產何男</a>
+          <a href="tel:0620 81 688" role="menuitem"><span class="ico">TEL</span> 06-208-1688</a>
+          <a href="mailto:hello@yide.tw" role="menuitem"><span class="ico">MAIL</span> hello@yide.tw</a>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=台南市東區東門路二段158號" target="_blank" rel="noopener" role="menuitem"><span class="ico">MAP</span> 台南市東區東門路二段 158 號 3 樓</a>
+          <a href="#" role="menuitem"><span class="ico">HRS</span> 平日 10:00 — 19:00</a>
+        </div>
+      </div>
+    </nav>
+    <span class="header-spacer"></span>
+    <a class="header-cta" href="index-v2.html#contact">
+      預約諮詢
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- ============== LIST VIEW ============== -->
+<div id="view-list">
+  <section class="page-head" data-screen-label="News List Header">
+    <div class="wrap">
+      <div class="crumbs">
+        <a href="index-v2.html">首頁</a>
+        <span class="sep"></span>
+        <span>最新消息</span>
+      </div>
+      <div class="eyebrow">— News &amp; Updates</div>
+      <h1>奕德的近況、<br>市場動態與住客指南。</h1>
+      <div class="page-divider" aria-hidden="true"></div>
+      <p class="page-lede">
+        公司公告、物件動態、房東房客指南，都會集中發布在這裡。每週由奕德編輯部更新。
+      </p>
+    </div>
+  </section>
+
+  <section class="news-section" data-screen-label="News List">
+    <div class="wrap">
+      <div class="news-toolbar">
+        <div class="news-filters" id="news-filters">
+          <span class="label">分類</span>
+          <button type="button" class="is-active" data-cat="">全部</button>
+        </div>
+        <div class="meta" id="news-meta">共 <em>—</em> 則消息</div>
+      </div>
+      <div class="news-list" id="news-list">
+        <div class="news-skel"></div>
+        <div class="news-skel"></div>
+        <div class="news-skel"></div>
+        <div class="news-skel"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============== ARTICLE VIEW ============== -->
+<article class="article" data-screen-label="News Article" id="view-article" hidden>
+  <div class="article-wrap">
+    <header class="article-header">
+      <div class="crumbs">
+        <a href="index-v2.html">首頁</a>
+        <span class="sep"></span>
+        <a href="#" data-route="list">最新消息</a>
+        <span class="sep"></span>
+        <span id="crumb-cat">—</span>
+      </div>
+
+      <div class="article-meta-top">
+        <span class="cat" id="meta-cat">—</span>
+        <span class="date" id="meta-date">—</span>
+        <span class="sep"></span>
+        <span class="read" id="meta-read">— min read</span>
+      </div>
+
+      <h1 class="article-title" id="article-title">載入中…</h1>
+
+      <div class="article-byline">
+        <span class="author">
+          <span class="avatar" id="author-initial">奕</span>
+          <span id="author-name">奕德編輯部</span>
+        </span>
+        <span class="spacer"></span>
+        <span class="share">
+          <span>分享</span>
+          <button type="button" aria-label="複製連結" id="share-copy">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </button>
+          <button type="button" aria-label="列印" onclick="window.print()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
+          </button>
+        </span>
+      </div>
+    </header>
+
+    <figure class="article-cover">
+      <img id="article-cover" src="" alt="">
+    </figure>
+
+    <div class="article-body" id="article-body">
+      <p style="color:var(--color-text-soft);">內容載入中…</p>
+    </div>
+
+    <div class="article-tags" id="article-tags" hidden>
+      <span class="label">Tags</span>
+    </div>
+
+    <nav class="article-nav" id="article-nav" aria-label="上下篇文章"></nav>
+
+    <section class="article-related" id="related-section" hidden>
+      <div class="head">
+        <div>
+          <div class="eyebrow">— More News</div>
+          <h3>你可能也想看</h3>
+        </div>
+        <a class="more" href="#" data-route="list">看所有消息 →</a>
+      </div>
+      <div class="related-grid" id="related-grid"></div>
+    </section>
+  </div>
+</article>
+
+<!-- ============== FOOTER ============== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="brand-mark" href="index-v2.html">
+          <span class="brand-text">
+            <span class="brand-zh">奕德不動產</span>
+            <span class="brand-en">Trust Estate</span>
+          </span>
+        </a>
+        <p class="footer-tagline">深耕大台南，提供包租代管與居住服務。一份合約，雙向安心。</p>
+      </div>
+      <div class="footer-col">
+        <h5>Service</h5>
+        <ul>
+          <li><a href="index-v2.html#properties">可入住物件</a></li>
+          <li><a href="index-v2.html#about">關於奕德</a></li>
+          <li><a href="#" data-route="list">最新消息</a></li>
+          <li><a href="index-v2.html#faq">常見問題</a></li>
+          <li><a href="index-v2.html#contact">聯絡方式</a></li>
+        </ul>
+      </div>
+      <div class="footer-col" id="footer-contact">
+        <h5>Contact</h5>
+        <ul><li>—</li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 奕德不動產 Trust Estate</span>
+      <span class="meta">
+        <span>大台南包租代管</span>
+        <span class="sep"></span>
+        <span>資料更新於 <span id="updated-at">—</span></span>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const API_BASE = "./mock";
+
+async function getProfile(){
+  const r = await fetch(`${API_BASE}/profile.json`);
+  return (await r.json()).profile;
+}
+async function getNews(){
+  const r = await fetch(`${API_BASE}/news.json`);
+  return (await r.json()).items;
+}
+
+function fmtDate(iso){
+  const d = new Date(iso);
+  return {
+    y: d.getFullYear(),
+    md: `${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`,
+    full: `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`
+  };
+}
+
+let _allNews = [];
+let _activeCat = "";
+
+/* ---------------- LIST ---------------- */
+function renderList(){
+  const list = document.getElementById('news-list');
+  const filtered = _activeCat
+    ? _allNews.filter(n => n.category === _activeCat)
+    : _allNews;
+
+  document.getElementById('news-meta').innerHTML =
+    `共 <em>${filtered.length}</em> 則消息`;
+
+  if (filtered.length === 0){
+    list.innerHTML = `<p style="color:var(--color-text-soft);text-align:center;padding:80px 0;border-bottom:1px solid var(--color-muted-border);">此分類目前沒有消息。</p>`;
+    return;
+  }
+
+  const [first, ...rest] = filtered;
+  const featured = `
+    <a class="news-feature" href="#a/${first.slug}">
+      <div class="news-cover">
+        <span class="featured-tag">Featured</span>
+        <img src="${first.cover}" alt="${first.title}">
+      </div>
+      <div class="news-body">
+        <div class="news-meta">
+          <span class="cat">${first.category}</span>
+          <span class="sep"></span>
+          <span>${fmtDate(first.date).full}</span>
+          <span class="sep"></span>
+          <span>${first.read_min} min read</span>
+        </div>
+        <h2>${first.title}</h2>
+        <p class="news-excerpt">${first.excerpt}</p>
+        <span class="go">
+          閱讀全文
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </span>
+      </div>
+    </a>
+  `;
+
+  const rows = rest.map(n => {
+    const d = fmtDate(n.date);
+    return `
+      <a class="news-row" href="#a/${n.slug}">
+        <span class="date">
+          <span class="y">${d.y}</span>
+          <span class="md">${d.md}</span>
+        </span>
+        <span class="cat-chip">${n.category}</span>
+        <span class="title">${n.title}</span>
+        <span class="excerpt">${n.excerpt}</span>
+        <span class="row-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+    `;
+  }).join('');
+
+  list.innerHTML = featured + rows;
+}
+
+function buildFilters(){
+  const cats = [...new Set(_allNews.map(n => n.category))];
+  const wrap = document.getElementById('news-filters');
+  cats.forEach(c => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.cat = c;
+    b.textContent = c;
+    wrap.appendChild(b);
+  });
+  wrap.addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    _activeCat = b.dataset.cat;
+    wrap.querySelectorAll('button').forEach(x =>
+      x.classList.toggle('is-active', x.dataset.cat === _activeCat));
+    renderList();
+  });
+}
+
+/* ---------------- ARTICLE ---------------- */
+function renderBody(blocks){
+  return blocks.map(b => {
+    if (b.type === 'lede')    return `<p class="lede">${b.text}</p>`;
+    if (b.type === 'h2')      return `<h2>${b.text}</h2>`;
+    if (b.type === 'p')       return `<p>${b.text}</p>`;
+    if (b.type === 'callout') return `<div class="callout">${b.text}</div>`;
+    if (b.type === 'img')     return `<img src="${b.src}" alt="${b.alt||''}">`;
+    return '';
+  }).join('');
+}
+
+function renderTags(tags){
+  const el = document.getElementById('article-tags');
+  if (!tags || tags.length === 0){ el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML = `<span class="label">Tags</span>` +
+    tags.map(t => `<a href="#" data-route="list">#${t}</a>`).join('');
+}
+
+function renderNav(items, idx){
+  const prev = items[idx - 1] || null;
+  const next = items[idx + 1] || null;
+  const nav = document.getElementById('article-nav');
+
+  const prevHTML = prev ? `
+    <a class="prev" href="#a/${prev.slug}">
+      <span class="dir">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>
+        上一則
+      </span>
+      <span class="t">${prev.title}</span>
+    </a>
+  ` : `<a class="prev disabled"><span class="dir">上一則</span><span class="t">已是最新</span></a>`;
+
+  const nextHTML = next ? `
+    <a class="next" href="#a/${next.slug}">
+      <span class="dir">
+        下一則
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </span>
+      <span class="t">${next.title}</span>
+    </a>
+  ` : `<a class="next disabled"><span class="dir">下一則</span><span class="t">已是最舊</span></a>`;
+
+  nav.innerHTML = prevHTML + nextHTML;
+}
+
+function renderRelated(items, current){
+  const others = items.filter(n => n.slug !== current.slug);
+  const same = others.filter(n => n.category === current.category);
+  const diff = others.filter(n => n.category !== current.category);
+  const picks = [...same, ...diff].slice(0, 3);
+  if (picks.length === 0) return;
+
+  document.getElementById('related-section').hidden = false;
+  document.getElementById('related-grid').innerHTML = picks.map(n => `
+    <a class="related-card" href="#a/${n.slug}">
+      <div class="cover"><img src="${n.cover}" alt="${n.title}"></div>
+      <div class="meta">
+        <span class="cat">${n.category}</span>
+        <span>${fmtDate(n.date).full}</span>
+      </div>
+      <h4>${n.title}</h4>
+    </a>
+  `).join('');
+}
+
+function renderArticle(slug){
+  const idx = _allNews.findIndex(n => n.slug === slug);
+  if (idx < 0){ location.hash = ''; return; }
+  const article = _allNews[idx];
+
+  document.title = `${article.title} — 奕德不動產`;
+  document.getElementById('crumb-cat').textContent = article.category;
+  document.getElementById('meta-cat').textContent = article.category;
+  document.getElementById('meta-date').textContent = fmtDate(article.date).full;
+  document.getElementById('meta-read').textContent = `${article.read_min} min read`;
+  document.getElementById('article-title').textContent = article.title;
+  document.getElementById('author-name').textContent = article.author || '奕德編輯部';
+  document.getElementById('author-initial').textContent = (article.author || '奕德編輯部').slice(0,1);
+
+  const cover = document.getElementById('article-cover');
+  cover.src = article.cover;
+  cover.alt = article.title;
+
+  document.getElementById('article-body').innerHTML = renderBody(article.body);
+  renderTags(article.tags);
+  renderNav(_allNews, idx);
+  renderRelated(_allNews, article);
+}
+
+/* ---------------- ROUTER ---------------- */
+function applyRoute(){
+  const h = location.hash || '';
+  const m = h.match(/^#a\/(.+)$/);
+  if (m){
+    document.getElementById('view-list').hidden = true;
+    document.getElementById('view-article').hidden = false;
+    renderArticle(m[1]);
+  } else {
+    document.getElementById('view-list').hidden = false;
+    document.getElementById('view-article').hidden = true;
+    document.title = '最新消息 — 奕德不動產';
+  }
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+// intercept data-route="list" links
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[data-route="list"]');
+  if (a){ e.preventDefault(); location.hash = ''; }
+});
+
+window.addEventListener('hashchange', applyRoute);
+
+/* ---------------- FOOTER ---------------- */
+function renderFooter(p){
+  if (!p) return;
+  const fc = document.getElementById('footer-contact');
+  fc.innerHTML = `
+    <h5>Contact</h5>
+    <ul>
+      ${p.contact_phone ? `<li><a href="tel:${p.contact_phone.replace(/[^0-9+]/g,'')}">${p.contact_phone}</a></li>` : ''}
+      ${p.contact_email ? `<li><a href="mailto:${p.contact_email}">${p.contact_email}</a></li>` : ''}
+      ${p.contact_address ? `<li>${p.contact_address}</li>` : ''}
+    </ul>
+  `;
+  if (p.updated_at){
+    document.getElementById('updated-at').textContent = fmtDate(p.updated_at).full;
+  }
+}
+
+/* ---------------- BOOT ---------------- */
+(async () => {
+  try{
+    const [news, profile] = await Promise.all([getNews(), getProfile()]);
+    _allNews = [...news].sort((a,b) => b.date.localeCompare(a.date));
+    buildFilters();
+    renderList();
+    renderFooter(profile);
+
+    document.getElementById('share-copy').addEventListener('click', async () => {
+      try{
+        await navigator.clipboard.writeText(location.href);
+        const btn = document.getElementById('share-copy');
+        const old = btn.innerHTML;
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>';
+        setTimeout(() => btn.innerHTML = old, 1500);
+      }catch(_){}
+    });
+
+    applyRoute();
+  } catch(err){
+    console.error('news load failed', err);
+  }
+})();
+</script>
+<script src="scripts/yide-config.js"></script>
+<script src="scripts/yide-nav.js"></script>
+</body>
+</html>

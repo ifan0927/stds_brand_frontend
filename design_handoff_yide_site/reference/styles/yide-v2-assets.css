@@ -1,0 +1,297 @@
+/* ============================================================
+   奕德不動產 — v2 image integrations
+   Real assets from uploads/ replacing placeholders + new bands.
+   ============================================================ */
+
+/* -- brand logo (replaces text glyph) -- */
+.brand-mark .brand-logo{
+  height: 40px;
+  width: auto;
+  display: block;
+}
+.site-footer .brand-mark .brand-logo{
+  height: 38px;
+  /* The supplied logo is gold on transparent — keeps brand recognition on the dark band */
+}
+
+/* -- hero with real photo -- */
+.hero-media .hero-image{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.hero-media{ position: relative; }
+.hero-media .hero-scrim{
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0) 35%,
+      rgba(255,255,255,0.55) 70%,
+      rgba(250,251,252,0.95) 100%);
+}
+.hero-overlay{
+  background: linear-gradient(180deg, rgba(250,251,252,0) 0%, rgba(250,251,252,0.92) 50%, var(--color-page) 100%);
+}
+@media (max-width: 720px){
+  .hero-media{ min-height: 520px; }
+}
+
+/* -- about photo (real) -- */
+.about-photo{
+  position: relative;
+  overflow: hidden;
+}
+.about-photo img{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.about-photo .photo-meta{
+  position: absolute;
+  left: 0; bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: var(--color-white);
+  border-top: 2px solid var(--color-brand);
+  z-index: 1;
+}
+.about-photo .photo-meta .k{
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-brand-strong);
+}
+.about-photo .photo-meta .v{
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-heading);
+}
+
+/* ============================================================
+   Interior band — 3-up photo strip
+   ============================================================ */
+.interior-band{
+  background: var(--color-page);
+  padding: var(--section-y-mobile) 0;
+  border-top: 1px solid var(--color-hairline);
+  border-bottom: 1px solid var(--color-hairline);
+}
+@media (min-width: 720px){
+  .interior-band{ padding: var(--section-y) 0; }
+}
+.interior-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+@media (max-width: 880px){
+  .interior-grid{ grid-template-columns: 1fr; gap: 20px; }
+}
+.interior-card{
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.interior-card > img{
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  background: var(--color-soft-surface);
+}
+.interior-card figcaption{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 4px 8px;
+  border-top: 1px solid var(--color-muted-border);
+  margin-top: 0;
+}
+.interior-card figcaption .k{
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-brand-strong);
+}
+.interior-card figcaption .v{
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-heading);
+  letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   Image band — full-bleed photo CTA
+   ============================================================ */
+.image-band{
+  position: relative;
+  background-size: cover;
+  background-position: right center;
+  background-color: var(--color-soft-surface);
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  padding: 96px 0;
+}
+@media (max-width: 720px){
+  .image-band{
+    min-height: 480px;
+    padding: 64px 0;
+    background-position: 70% center;
+  }
+}
+.image-band .image-band-scrim{
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.92) 0%,
+    rgba(255,255,255,0.85) 40%,
+    rgba(255,255,255,0.35) 70%,
+    rgba(255,255,255,0.1) 100%);
+}
+@media (max-width: 720px){
+  .image-band .image-band-scrim{
+    background: linear-gradient(180deg,
+      rgba(255,255,255,0.92) 0%,
+      rgba(255,255,255,0.78) 60%,
+      rgba(255,255,255,0.55) 100%);
+  }
+}
+.image-band-inner{
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+}
+.image-band-inner .eyebrow{
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-brand-strong);
+  margin-bottom: 18px;
+}
+.image-band-title{
+  font-size: clamp(32px, 4.2vw, 50px);
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: 0.06em;
+  color: var(--color-heading);
+  margin: 0 0 22px;
+  text-wrap: balance;
+}
+.image-band-sub{
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--color-text);
+  margin: 0 0 32px;
+  max-width: 42ch;
+}
+.image-band-cta{
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.btn-ghost-light{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 26px;
+  border: 1px solid var(--color-heading);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-heading);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background .25s ease, color .25s ease;
+}
+.btn-ghost-light:hover{
+  background: var(--color-heading);
+  color: var(--color-white);
+}
+
+/* ============================================================
+   Trust proof — certificate gallery
+   ============================================================ */
+.trust-section{
+  background: var(--color-white);
+}
+.trust-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+@media (max-width: 880px){
+  .trust-grid{ grid-template-columns: 1fr; gap: 28px; }
+}
+.trust-card{
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-page);
+  border: 1px solid var(--color-muted-border);
+  transition: border-color .25s ease, transform .25s ease;
+}
+.trust-card:hover{
+  border-color: var(--color-brand);
+  transform: translateY(-2px);
+}
+.trust-photo{
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--color-soft-surface);
+  border-bottom: 1px solid var(--color-muted-border);
+}
+.trust-photo img{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 18px;
+  background: var(--color-white);
+}
+.trust-card figcaption{
+  padding: 24px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.trust-card figcaption .k{
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-brand-strong);
+}
+.trust-card h4{
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--color-heading);
+  line-height: 1.4;
+}
+.trust-card p{
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-text);
+}

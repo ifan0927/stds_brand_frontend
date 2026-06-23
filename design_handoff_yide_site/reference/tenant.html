@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>我是房客 · 出租物件 — 奕德不動產</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles/yide-v2.css">
+<link rel="stylesheet" href="styles/yide-v2-sections.css">
+<link rel="stylesheet" href="styles/yide-v2-assets.css">
+<link rel="stylesheet" href="styles/yide-v2-news.css">
+</head>
+<body>
+
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+    <rect width="200" height="200" fill="#FAFBFC"/>
+    <rect x="0" y="0" width="200" height="6" fill="#DAC858"/>
+    <g transform="translate(58,58)" fill="none" stroke="#5a5655" stroke-width="3">
+      <path d="M4 40 L42 8 L80 40"/>
+      <rect x="14" y="40" width="56" height="44"/>
+    </g>
+    <rect x="58" y="92" width="84" height="4" fill="#DAC858"/>
+  </svg>
+</template>
+
+<!-- ============== HEADER ============== -->
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand-mark" href="index-v2.html" aria-label="奕德不動產 首頁">
+      <img class="brand-logo" src="uploads/logos/logo-main-1.png" alt="奕德不動產 Trust Estate">
+    </a>
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-label="開啟選單" aria-expanded="false" aria-controls="primary-nav">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="primary-nav" id="primary-nav" aria-label="主選單">
+      <a href="news-app.html">最新消息</a>
+      <a href="index-v2.html#about">關於奕德</a>
+      <a href="tenant.html" class="is-active">我是房客</a>
+      <a href="landlord.html">我是房東</a>
+      <a href="https://docs.google.com/forms/" data-yide="form-viewing">預約賞屋</a>
+      <div class="nav-dd">
+        <button class="nav-dd-trigger" type="button" aria-expanded="false">
+          聯絡我們
+          <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="nav-dd-menu" role="menu">
+          <a href="#" data-yide="line" role="menuitem"><span class="ico">LINE</span> 官方帳號</a>
+          <a href="#" data-yide="fb" role="menuitem"><span class="ico">FB</span> 不動產何男</a>
+          <a href="tel:0620 81 688" role="menuitem"><span class="ico">TEL</span> 06-208-1688</a>
+          <a href="mailto:hello@yide.tw" role="menuitem"><span class="ico">MAIL</span> hello@yide.tw</a>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=台南市東區東門路二段158號" target="_blank" rel="noopener" role="menuitem"><span class="ico">MAP</span> 台南市東區東門路二段 158 號 3 樓</a>
+          <a href="#" role="menuitem"><span class="ico">HRS</span> 平日 10:00 — 19:00</a>
+        </div>
+      </div>
+    </nav>
+    <span class="header-spacer"></span>
+    <a class="header-cta" href="https://docs.google.com/forms/" data-yide="form-viewing">
+      預約賞屋
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- ============== PAGE HEAD ============== -->
+<section class="page-head" data-screen-label="Tenant Header">
+  <div class="wrap">
+    <div class="crumbs">
+      <a href="index-v2.html">首頁</a>
+      <span class="sep"></span>
+      <span>我是房客</span>
+    </div>
+    <div class="eyebrow">— For Tenants</div>
+    <h1>找一間，<br>可以好好住下來的房子。</h1>
+    <div class="page-divider" aria-hidden="true"></div>
+    <p class="page-lede">
+      以下為奕德目前代管的出租物件，分布於大台南各行政區。看房不收費、合約透明、房客零仲介費。有興趣的物件，歡迎直接填表預約賞屋。
+    </p>
+  </div>
+</section>
+
+<!-- ============== PROPERTIES ============== -->
+<section class="section" data-screen-label="Tenant Properties">
+  <div class="wrap">
+    <div class="section-head row">
+      <div>
+        <div class="eyebrow">— Available Now</div>
+        <h2 class="section-title">出租物件一覽</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+      </div>
+      <p class="section-lede">
+        物件清單由系統即時同步，狀態以實際洽詢為準。看到喜歡的，按下方按鈕預約賞屋即可。
+      </p>
+    </div>
+
+    <div class="props is-static" id="props-list">
+      <div class="prop-skel"></div>
+      <div class="prop-skel"></div>
+      <div class="prop-skel"></div>
+    </div>
+
+    <div class="props-foot" id="props-foot" style="visibility:hidden">
+      <span class="count"></span>
+      <div class="pager" id="pager" hidden>
+        <button type="button" id="prev-page" aria-label="上一頁">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>
+        </button>
+        <span class="pos"><em id="page-now">1</em> / <span id="page-total">1</span></span>
+        <button type="button" id="next-page" aria-label="下一頁">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- LEAD CTA -> external Google form -->
+    <div class="lead-cta">
+      <div>
+        <div class="eyebrow">— Book a Viewing</div>
+        <h3>看到喜歡的物件了嗎？</h3>
+        <p>填寫線上預約賞屋表單，留下您方便的時間與想看的物件，奕德會在營業時間內與您聯繫安排。</p>
+      </div>
+      <a class="btn-primary" href="https://docs.google.com/forms/" data-yide="form-viewing">
+        前往預約賞屋表單
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="brand-mark" href="index-v2.html">
+          <span class="brand-text">
+            <span class="brand-zh">奕德不動產</span>
+            <span class="brand-en">Trust Estate</span>
+          </span>
+        </a>
+        <p class="footer-tagline">深耕大台南，提供包租代管與居住服務。一份合約，雙向安心。</p>
+      </div>
+      <div class="footer-col">
+        <h5>Service</h5>
+        <ul>
+          <li><a href="tenant.html">我是房客</a></li>
+          <li><a href="landlord.html">我是房東</a></li>
+          <li><a href="news-app.html">最新消息</a></li>
+          <li><a href="index-v2.html#about">關於奕德</a></li>
+          <li><a href="index-v2.html#faq">常見問題</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="tel:0620 81 688">06-208-1688</a></li>
+          <li><a href="mailto:hello@yide.tw">hello@yide.tw</a></li>
+          <li>台南市東區東門路二段 158 號 3 樓</li>
+          <li>平日 10:00 — 19:00</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 奕德不動產 Trust Estate</span>
+      <span class="meta">
+        <span>大台南包租代管</span>
+        <span class="sep"></span>
+        <span>For Tenants</span>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script src="scripts/yide-config.js"></script>
+<script>
+/* ============================================================
+   我是房客 — 出租物件列表
+   來源：YIDE_CONFIG.PROPERTIES_API（外部 API）。
+   未設定時改抓本地 ./mock/availability.json 作為示意。
+   ============================================================ */
+const CFG = window.YIDE_CONFIG || {};
+const PROPS_SOURCE = CFG.PROPERTIES_API || "./mock/availability.json";
+const PAGE_SIZE = 8;
+let _propsState = { all: [], page: 1 };
+
+async function getProperties(){
+  const r = await fetch(PROPS_SOURCE);
+  const data = await r.json();
+  // 接受 {items:[...]} 或直接陣列兩種格式
+  return Array.isArray(data) ? data : (data.items || []);
+}
+
+function splitAddress(addr){
+  const m = (addr || '').match(/^(.+?[市縣].+?[區鄉鎮市])(.*)$/);
+  if (m) return { district: m[1], rest: m[2].trim() };
+  return { district: '', rest: addr || '' };
+}
+
+function drawPropsPage(){
+  const list = document.getElementById('props-list');
+  const { all, page } = _propsState;
+  const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
+  const start = (page - 1) * PAGE_SIZE;
+  const slice = all.slice(start, start + PAGE_SIZE);
+
+  list.innerHTML = slice.map((p, i) => {
+    const { district, rest } = splitAddress(p.address);
+    const globalIdx = start + i + 1;
+    return `
+      <div class="prop-row">
+        <span class="idx">No. ${String(globalIdx).padStart(2,'0')}</span>
+        <span class="name">${p.property_public_name || '—'}</span>
+        <span class="addr"><span class="district">${district}</span>${rest}</span>
+        <span class="prop-chip ${p.has_vacant_room ? '' : 'full'}">
+          <span class="pip"></span>
+          ${p.has_vacant_room ? '可入住' : '滿房'}
+        </span>
+      </div>
+    `;
+  }).join('');
+
+  const vacant = all.filter(i => i.has_vacant_room).length;
+  const foot = document.getElementById('props-foot');
+  const pager = document.getElementById('pager');
+  foot.style.visibility = 'visible';
+  foot.querySelector('.count').innerHTML =
+    `共 <em>${vacant}</em> 間可入住 · 顯示 ${start + 1}–${start + slice.length} / ${all.length} 間`;
+
+  if (totalPages > 1){
+    pager.hidden = false;
+    document.getElementById('page-now').textContent = page;
+    document.getElementById('page-total').textContent = totalPages;
+    document.getElementById('prev-page').disabled = page <= 1;
+    document.getElementById('next-page').disabled = page >= totalPages;
+  } else {
+    pager.hidden = true;
+  }
+}
+
+function renderProps(items){
+  const list = document.getElementById('props-list');
+  if (!items || items.length === 0){
+    list.innerHTML = `<p style="color:var(--color-text-soft);text-align:center;padding:64px 0;border-bottom:1px solid var(--color-muted-border);">目前無可入住物件。</p>`;
+    document.getElementById('props-foot').style.visibility = 'hidden';
+    return;
+  }
+  const sorted = [...items].sort((a,b) => (b.has_vacant_room ? 1 : 0) - (a.has_vacant_room ? 1 : 0));
+  _propsState = { all: sorted, page: 1 };
+  drawPropsPage();
+}
+
+document.getElementById('prev-page').addEventListener('click', () => {
+  if (_propsState.page > 1){ _propsState.page -= 1; drawPropsPage(); window.scrollTo({top:0}); }
+});
+document.getElementById('next-page').addEventListener('click', () => {
+  const total = Math.ceil(_propsState.all.length / PAGE_SIZE);
+  if (_propsState.page < total){ _propsState.page += 1; drawPropsPage(); window.scrollTo({top:0}); }
+});
+
+(async () => {
+  try{
+    renderProps(await getProperties());
+  } catch(err){
+    console.error('property load failed', err);
+    document.getElementById('props-list').innerHTML =
+      `<p style="color:var(--color-text-soft);text-align:center;padding:64px 0;border-bottom:1px solid var(--color-muted-border);">物件資料載入失敗，請稍後再試。</p>`;
+  }
+})();
+</script>
+<script src="scripts/yide-nav.js"></script>
+</body>
+</html>

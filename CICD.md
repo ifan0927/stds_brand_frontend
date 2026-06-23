@@ -1,9 +1,8 @@
 # CI/CD
 
-This repo is the Astro + TypeScript public brand frontend for the STDS core
-backend public brand API. Keep delivery simple, static-first, and aligned with
-`AGENTS.md`, `DESIGN.md`, `ARCHITECTURE.md` when present, and
-`docs/.rules/testing.md` when present.
+This repo is the Astro + TypeScript public brand frontend. Keep delivery simple,
+static-first, and aligned with `AGENTS.md`, `ARCHITECTURE.md`,
+`design_handoff_yide_site`, and `docs/.rules/testing.md` when present.
 
 ## Branch Flow
 
@@ -24,7 +23,8 @@ PRs run the minimal Astro project gate:
 - Install dependencies with the project package manager lockfile.
 - Run `check`.
 - Run `test`.
-- Run `build` against a local fixture server for the public brand API.
+- Run `build` against a local fixture server for the backend availability API
+  until TinaCMS content fixtures are introduced.
 
 The current PR workflow is `.github/workflows/pr-ci.yml`. The expected required
 PR check name for the first repository gate baseline is `PR CI / verify`.
@@ -41,9 +41,11 @@ Expected staging setup:
 - Environment: Cloudflare Pages staging.
 - Build command: `npm run build`.
 - Output directory: `dist`.
-- Build-time data source: the core backend staging public API.
-- Content freshness: update backend public brand data, then trigger a
-  Cloudflare Pages rebuild/redeploy so Astro fetches a fresh static snapshot.
+- Build-time data sources: TinaCMS repo-backed content and the core backend
+  staging property availability API.
+- Content freshness: TinaCMS content commits or backend availability refreshes
+  require a Cloudflare Pages rebuild/redeploy so Astro publishes a fresh static
+  snapshot.
 
 Expected production setup:
 
@@ -51,7 +53,8 @@ Expected production setup:
 - Environment: Cloudflare Pages production.
 - Build command: `npm run build`.
 - Output directory: `dist`.
-- Build-time data source: the core backend production public API.
+- Build-time data sources: TinaCMS repo-backed content and the core backend
+  production property availability API.
 - Production promotion is manual and outside the first staging baseline.
 
 PR preview deployments, if enabled in Cloudflare Pages, are temporary
@@ -59,8 +62,10 @@ per-PR previews. They are separate from the staging environment and are not the
 source of staging smoke evidence.
 
 No Firebase Hosting brand rewrite, `stds_brand_backend`, brand thin Cloud Run
-service, booking flow, write API, CMS, or realtime availability is part of this
-deployment shape.
+service, booking flow, write API, or realtime availability is part of this
+deployment shape. TinaCMS is the accepted editorial content source; its admin,
+tokens, and webhooks must be configured explicitly and must not introduce
+runtime rendering for public pages.
 
 ## Cloudflare Environment Variables
 
@@ -69,14 +74,16 @@ operator-managed and must not be committed.
 
 | Name | Required | Scope | Safe example shape | Used for |
 | --- | --- | --- | --- | --- |
-| `BRAND_API_BASE_URL` | Yes | Staging and production builds | `https://example.com` | Core backend public API base URL for profile, FAQs, and availability. |
+| `BRAND_API_BASE_URL` | Yes | Staging and production builds | `https://example.com` | Core backend public API base URL for property availability. |
 | `SITE_URL` | Yes | Staging and production builds | `https://example.com` | Absolute public origin for canonical and metadata URLs. |
 
 `BRAND_API_BASE_URL` must allow build-time fetches for:
 
-- `GET /api/v1/public/brand/profile`
-- `GET /api/v1/public/brand/faqs`
 - `GET /api/v1/public/properties/availability`
+
+TinaCMS environment variables, if required by the selected TinaCloud setup,
+must be documented when TinaCMS is implemented. Do not commit Tina tokens,
+Cloudflare deploy hook URLs, or other credential material.
 
 `SITE_URL` must be an absolute origin with no path, query, or hash. A trailing
 slash may be normalized by the site code.
@@ -95,7 +102,10 @@ Repo-side baseline:
 - Set build command to `npm run build`.
 - Set output directory to `dist`.
 - Set `BRAND_API_BASE_URL` and `SITE_URL` for staging.
-- Later, set separate production values for `BRAND_API_BASE_URL` and `SITE_URL`.
+- Configure TinaCMS/TinaCloud build-time environment variables when the Tina
+  integration is implemented.
+- Later, set separate production values for `BRAND_API_BASE_URL`, `SITE_URL`,
+  and TinaCMS configuration.
 
 Repository gate baseline:
 
@@ -133,18 +143,18 @@ issue. After Cloudflare Pages builds staging from `dev`, verify:
 - Required Cloudflare Pages environment variables are documented, configured for
   the target environment, and do not expose secrets in frontend output.
 - `BRAND_API_BASE_URL` is configured as the build-time API base URL for the
-  target core backend public API.
-- Build-time data fetch succeeds against the core backend public brand
-  endpoints.
+  target core backend property availability API.
+- TinaCMS content is present for required site settings, page content, FAQ, and
+  news entries after the Tina integration is implemented.
+- Build-time data fetch succeeds against the core backend public availability
+  endpoint.
 
 Backend API smoke should cover:
 
-- `GET /api/v1/public/brand/profile`
-- `GET /api/v1/public/brand/faqs`
 - `GET /api/v1/public/properties/availability`
 
 Use the core backend `/health` only as an environment sanity check; it is not a
-substitute for the three public endpoint checks.
+substitute for the public availability endpoint check.
 
 Future non-secret staging evidence should record:
 
@@ -155,8 +165,9 @@ Future non-secret staging evidence should record:
 - Confirmation that required environment variables are configured, without
   recording their private values.
 - Confirmation that static pages and generated assets were published.
-- Confirmation that build-time data fetches succeeded for the three public
-  brand endpoints.
+- Confirmation that TinaCMS content was read successfully, when applicable.
+- Confirmation that build-time data fetch succeeded for the public availability
+  endpoint.
 
 Do not record secrets, tokens, deploy hook URLs, private environment values, or
 actual Cloudflare credential material.
@@ -170,7 +181,8 @@ Production releases are manual and approved. Promote only after:
 - Staging static asset checks passed.
 - Staging Cloudflare Pages environment-variable configuration matched the
   documented release assumptions.
-- Staging build-time API smoke passed for the three public endpoints.
+- Staging TinaCMS content smoke passed, when applicable.
+- Staging build-time API smoke passed for the public availability endpoint.
 - The release owner confirms the production change window and rollback path.
 
 ## Initial Non-Goals
@@ -178,4 +190,5 @@ Production releases are manual and approved. Promote only after:
 - No heavy end-to-end suite at the start.
 - No admin workflow checks.
 - No backend migration checks.
-- No broad backend contract testing beyond public endpoint smoke for the brand site.
+- No broad backend contract testing beyond public availability endpoint smoke
+  for the brand site.

@@ -4,8 +4,9 @@ Public brand website frontend for the STDS property-management side project.
 
 This repository is a lightweight Astro + TypeScript website focused on SEO,
 fast static delivery, and public-facing brand content. It is not the main STDS
-admin application. The site consumes the core backend public readonly brand API
-at build time for public profile, FAQ, and property availability content.
+admin application. The target content architecture follows
+`design_handoff_yide_site`: TinaCMS owns editorial brand content, while the core
+backend remains the source for public property availability only.
 
 ## Project Role
 
@@ -28,37 +29,48 @@ stay static-first, SEO-friendly, and simple to deploy.
 - TypeScript
 - Static-first rendering
 - Small interactive islands only when needed
-- Build-time public API access through core backend public read-only endpoints
+- TinaCMS for editable brand content, FAQ, contact details, and news
+- Build-time public API access to the core backend property availability endpoint
 
 The repository is in its early Astro implementation phase. Governance docs,
 design references, package scripts, and the first static homepage structure are
-present. The homepage fetches public brand content from `BRAND_API_BASE_URL` at
-Astro build time and renders it into static HTML.
+present. The current code still contains the first homepage/API integration
+slice; the next implementation direction is the multi-page
+`design_handoff_yide_site` handoff with TinaCMS content and a tenant-page
+availability list.
 
 Astro 6 requires Node.js `22.12.0` or newer. This repo includes `.nvmrc` with
 `22.12.0`; Cloudflare Pages builds should use Node 22 or set
 `NODE_VERSION=22.12.0` explicitly.
 
-## API Boundary
+## Content And API Boundary
 
-The frontend should read only the public readonly contract from the core
-backend public namespace:
+The product, page structure, visual design, and TinaCMS content model should
+follow [design_handoff_yide_site](design_handoff_yide_site/README.md).
 
-- `GET /api/v1/public/brand/profile`
-- `GET /api/v1/public/brand/faqs`
+TinaCMS should own all editorial content:
+
+- site settings, brand identity, contact details, social links, and form URLs
+- homepage, tenant page, landlord page, FAQ, and news/blog content
+- page-level SEO fields and editorial images
+
+The frontend should read only this public readonly property availability
+contract from the core backend public namespace:
+
 - `GET /api/v1/public/properties/availability`
 
 The brand site should not consume admin APIs, tenant data, lease data, billing
 data, repair workflows, attachments, scheduler behavior, or direct database
 access.
 
-The brand site does not include booking, reservation, contact form submission,
-CMS, realtime availability, or any write API.
+The brand site does not include booking, reservation, public contact form
+submission, realtime availability, or any write API. Booking and consultation
+actions link out to configured external forms.
 
-Production brand data is fetched at Astro build time. Cloudflare Pages should
-provide `BRAND_API_BASE_URL` as the build-time API base URL for local, preview,
-staging, and production builds. Do not hardcode local, staging, production,
-Firebase, or Cloud Run URLs.
+Public availability data is fetched at Astro build time. Cloudflare Pages should
+provide `BRAND_API_BASE_URL` as the build-time core backend API base URL for
+local, preview, staging, and production builds. Do not hardcode local, staging,
+production, Firebase, or Cloud Run URLs.
 
 Cloudflare Pages staging builds from the GitHub `dev` branch. Production is
 reserved for a separate `prod` branch when production promotion is introduced.
@@ -101,6 +113,9 @@ The goal is a small but production-minded public website foundation:
 - [ARCHITECTURE.md](ARCHITECTURE.md): Astro rendering, API, deployment, and
   configuration boundaries.
 - [DESIGN.md](DESIGN.md): visual direction and design token reference.
+- [design_handoff_yide_site](design_handoff_yide_site/README.md): current
+  multi-page visual handoff and TinaCMS content model; this supersedes the
+  earlier single-page visual direction for implementation planning.
 - [CICD.md](CICD.md): branch flow, PR checks, staging smoke, and production
   release expectations.
 - [docs/.rules/coding-style.md](docs/.rules/coding-style.md): implementation
@@ -110,5 +125,6 @@ The goal is a small but production-minded public website foundation:
 ## Status
 
 Early Astro app. Static homepage code, package scripts, build-time public API
-integration, and the first PR CI workflow exist. Broader smoke coverage remains
-a later implementation slice.
+integration, and the first PR CI workflow exist. The accepted next direction is
+to migrate toward the `design_handoff_yide_site` multi-page handoff, TinaCMS
+content, and backend availability-only data boundary.

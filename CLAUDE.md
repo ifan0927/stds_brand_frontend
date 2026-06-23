@@ -66,15 +66,16 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Project-Specific Guidelines
 
-- This repo is the STDS brand frontend served by Cloudflare Pages and backed by
-  the core backend public brand API.
+- This repo is the STDS brand frontend served by Cloudflare Pages. TinaCMS is
+  the accepted source for editorial brand content, and the core backend remains
+  the source for public property availability only.
 - Use Astro + TypeScript. Treat this as a brand/SEO-oriented public website, not an admin SPA.
 - SEO-strengthening design thinking is a core rule: before page implementation, consider search intent, semantic page structure, crawlable/static content, title/meta/OG data, performance, and accessible content.
 - Cloud-deployment fit is a core rule: document required environment variables, keep build/runtime configuration explicit, and avoid code that only works on one local machine.
 - Keep public-facing pages simple, fast, and content-first. Prefer static or server-rendered content unless interactivity is clearly needed.
-- Use `DESIGN.md` for product/design direction and `ARCHITECTURE.md` for implementation boundaries when present.
+- Use `design_handoff_yide_site/` for current product/design/content-model
+  direction and `ARCHITECTURE.md` for implementation boundaries when present.
 - Follow `docs/.rules/coding-style.md`, `docs/.rules/testing.md`, and `CICD.md` when those files are present.
 - Backend public API reference: `~/stds_backend` issue #209 and the core
-  OpenAPI public brand endpoints (`GET /api/v1/public/brand/profile`,
-  `GET /api/v1/public/brand/faqs`, and
-  `GET /api/v1/public/properties/availability`).
+  OpenAPI public availability endpoint
+  (`GET /api/v1/public/properties/availability`).
