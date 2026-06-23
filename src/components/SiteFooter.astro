@@ -1,60 +1,184 @@
 ---
+import {
+  getContactRows,
+  getFooterServiceLinks,
+  getLinkAttributes,
+  type SiteSettings,
+} from '../lib/site/chrome';
+
 type Props = {
-  updatedAt: string | null;
+  settings: SiteSettings;
+  metaLabel?: string;
 };
 
-const { updatedAt } = Astro.props;
-
-function formatDate(value: string | null): string {
-  if (!value) return '—';
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-
-  return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
-}
+const { settings, metaLabel = '大台南包租代管' } = Astro.props;
+const serviceLinks = getFooterServiceLinks(settings);
+const contactRows = getContactRows(settings);
+const footerContactRows = contactRows.filter((row) => ['TEL', 'MAIL', 'MAP', 'HRS'].includes(row.key));
 ---
-<footer class="foot">
+<footer class="site-footer">
   <div class="wrap">
-    <div class="foot-inner">
-      <a class="brand" href="#top">
-        <span class="mark">
-          <svg viewBox="0 0 28 28" fill="none">
-            <circle cx="14" cy="14" r="13" fill="oklch(0.590 0.135 45)"/>
-            <path d="M7 19 L14 9 L21 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            <circle cx="14" cy="14" r="1.6" fill="white"/>
-          </svg>
-        </span>
-        奕德不動產
-        <small>YI&middot;DE</small>
-      </a>
-      <div class="foot-meta">
-        <span id="legal-copy">© 2026 奕德不動產</span>
-        <span class="sep"></span>
-        <span>大台南包租代管</span>
-        <span class="sep"></span>
-        <span>資料更新於 <span id="updated-at">{formatDate(updatedAt)}</span></span>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="brand-mark" href="/" aria-label={`${settings.brandName} 首頁`}>
+          <span class="brand-text">
+            <span class="brand-zh">{settings.brandName}</span>
+            <span class="brand-en">{settings.brandNameEn}</span>
+          </span>
+        </a>
+        <p class="footer-tagline">{settings.footerTagline}</p>
       </div>
+
+      <div class="footer-col">
+        <h2>Service</h2>
+        <ul>
+          {serviceLinks.map((item) => (
+            <li>
+              <a {...getLinkAttributes(item.href, item.external ?? undefined)}>{item.label}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h2>Contact</h2>
+        <ul>
+          {footerContactRows.map((row) => (
+            <li>
+              {row.href ? (
+                <a {...getLinkAttributes(row.href, row.external)}>{row.label}</a>
+              ) : (
+                <span>{row.label}</span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>{settings.copyright}</span>
+      <span class="meta">
+        <span>{metaLabel}</span>
+        <span class="sep"></span>
+        <span>{settings.brandNameEn}</span>
+      </span>
     </div>
   </div>
 </footer>
 
-<style is:global>
-/* ---------- footer ---------- */
-footer.foot{
+<style>
+.site-footer {
+  margin-top: 0;
   padding: 56px 0 32px;
+  background: var(--color-footer);
+  color: var(--color-footer-text);
 }
-.foot-inner{
-  display: flex; justify-content: space-between; align-items: center;
-  gap: 24px;
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 48px;
+  padding-bottom: 36px;
+  border-bottom: 1px solid rgba(255, 255, 255, .1);
+}
+
+.brand-mark {
+  display: inline-flex;
+  color: var(--color-white);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.brand-zh {
+  color: var(--color-white);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.brand-en {
+  margin-top: 4px;
+  color: var(--color-brand);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+.footer-tagline {
+  max-width: 30ch;
+  margin: 22px 0 0;
+  color: rgba(255, 255, 255, .55);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.footer-col h2 {
+  margin: 0 0 18px;
+  color: var(--color-brand);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+.footer-col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-col li {
+  color: rgba(255, 255, 255, .72);
+  font-size: 14px;
+}
+
+.footer-col a {
+  color: rgba(255, 255, 255, .72);
+  transition: color .2s ease;
+}
+
+.footer-col a:hover {
+  color: var(--color-brand);
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   flex-wrap: wrap;
-  padding-top: 32px;
-  border-top: 1px solid var(--hairline-soft);
+  padding-top: 28px;
+  color: rgba(255, 255, 255, .4);
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
 }
-.foot-meta{
-  display: flex; gap: 18px; align-items: center;
-  font-size: 12.5px; color: var(--muted);
+
+.meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   flex-wrap: wrap;
 }
-.foot-meta .sep{ width: 1px; height: 12px; background: var(--hairline); }
+
+.sep {
+  width: 1px;
+  height: 12px;
+  background: rgba(255, 255, 255, .18);
+}
+
+@media (max-width: 720px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
 </style>

@@ -1,12 +1,18 @@
 ---
 import type { PageMetadata } from '../lib/seo/site';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import siteSettings from '../../content/site-settings/site.json';
+import type { HeaderCtaVariant } from '../lib/site/chrome';
 
 type Props = {
   metadata: PageMetadata;
   structuredData?: Record<string, unknown> | Record<string, unknown>[] | null;
+  headerCtaVariant?: HeaderCtaVariant;
+  footerMetaLabel?: string;
 };
 
-const { metadata, structuredData = null } = Astro.props;
+const { metadata, structuredData = null, headerCtaVariant = 'consult', footerMetaLabel } = Astro.props;
 const structuredDataItems = Array.isArray(structuredData)
   ? structuredData
   : structuredData
@@ -39,7 +45,9 @@ const structuredDataItems = Array.isArray(structuredData)
     ))}
   </head>
   <body>
+    <SiteHeader settings={siteSettings} currentPath={Astro.url.pathname} ctaVariant={headerCtaVariant} />
     <slot />
+    <SiteFooter settings={siteSettings} metaLabel={footerMetaLabel} />
   </body>
 </html>
 
