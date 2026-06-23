@@ -67,6 +67,11 @@ deployment shape. TinaCMS is the accepted editorial content source; its admin,
 tokens, and webhooks must be configured explicitly and must not introduce
 runtime rendering for public pages.
 
+The current TinaCMS foundation builds the admin shell locally with
+`tinacms build --local --skip-cloud-checks` as part of `npm run build`. This
+keeps Cloudflare Pages output static in `dist` and avoids requiring TinaCloud
+credentials before the operator setup is selected.
+
 ## Cloudflare Environment Variables
 
 Configure these as Cloudflare Pages build-time environment variables. Values are
@@ -85,6 +90,10 @@ TinaCMS environment variables, if required by the selected TinaCloud setup,
 must be documented when TinaCMS is implemented. Do not commit Tina tokens,
 Cloudflare deploy hook URLs, or other credential material.
 
+No TinaCloud environment variable names are selected in the local-first
+foundation. Add them only when the TinaCloud/editor workflow issue establishes
+the actual setup.
+
 `SITE_URL` must be an absolute origin with no path, query, or hash. A trailing
 slash may be normalized by the site code.
 
@@ -102,8 +111,8 @@ Repo-side baseline:
 - Set build command to `npm run build`.
 - Set output directory to `dist`.
 - Set `BRAND_API_BASE_URL` and `SITE_URL` for staging.
-- Configure TinaCMS/TinaCloud build-time environment variables when the Tina
-  integration is implemented.
+- Configure TinaCMS/TinaCloud build-time environment variables only after the
+  selected editor workflow requires them.
 - Later, set separate production values for `BRAND_API_BASE_URL`, `SITE_URL`,
   and TinaCMS configuration.
 

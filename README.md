@@ -94,6 +94,24 @@ PORT=4177 node scripts/brand-api-fixture.mjs
 SITE_URL=https://example.com BRAND_API_BASE_URL=http://127.0.0.1:4177 npm run build
 ```
 
+## TinaCMS Foundation
+
+The TinaCMS admin shell is local-first in the current foundation slice. Run the
+Astro dev server with Tina available at `/admin/index.html`:
+
+```sh
+npm run dev:tina
+```
+
+Production builds run `tinacms build --local --skip-cloud-checks` before Astro
+so generated admin assets under `public/admin` are copied into the deployable
+`dist/admin` output. Generated Tina files under `tina/__generated__` and
+`public/admin` are build artifacts and are not committed.
+
+TinaCloud credentials, editor save workflow, and Cloudflare rebuild behavior are
+operator-managed follow-up work. Do not commit Tina tokens or account-specific
+values.
+
 ## Engineering Focus
 
 The goal is a small but production-minded public website foundation:
