@@ -1,0 +1,211 @@
+---
+import PropertiesRegistry from '../components/PropertiesRegistry.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { fetchPropertyAvailability } from '../lib/api/brand';
+import { buildPageMetadata } from '../lib/seo/site';
+import { getLinkAttributes } from '../lib/site/chrome';
+import tenantPage from '../../content/pages/tenant/page.json';
+import siteSettings from '../../content/site-settings/site.json';
+
+const availabilityItems = await fetchPropertyAvailability();
+const metadata = buildPageMetadata({
+  title: tenantPage.seoTitle,
+  description: tenantPage.seoDescription,
+  path: '/tenant',
+  siteName: siteSettings.brandName,
+});
+const viewingLink = getLinkAttributes(siteSettings.forms.viewingUrl);
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: tenantPage.seoTitle,
+  description: tenantPage.seoDescription,
+  url: metadata.canonicalUrl,
+  isPartOf: {
+    '@type': 'WebSite',
+    name: siteSettings.brandName,
+    url: new URL('/', metadata.canonicalUrl).toString(),
+  },
+};
+---
+<BaseLayout metadata={metadata} structuredData={structuredData} headerCtaVariant="viewing" footerMetaLabel="For Tenants">
+  <main class="tenant-page">
+    <section class="page-head" aria-labelledby="page-title">
+      <div class="wrap">
+        <nav class="crumbs" aria-label="麵包屑">
+          <a href="/">首頁</a>
+          <span class="sep" aria-hidden="true"></span>
+          <span aria-current="page">我是房客</span>
+        </nav>
+        <p class="eyebrow">— {tenantPage.head.eyebrow}</p>
+        <h1 id="page-title">{tenantPage.head.title}</h1>
+        <span class="page-rule" aria-hidden="true"></span>
+        <p class="page-lede">{tenantPage.head.lede}</p>
+      </div>
+    </section>
+
+    <PropertiesRegistry items={availabilityItems} intro={tenantPage.listIntro} />
+
+    <section class="lead-cta-section" aria-labelledby="tenant-cta-title">
+      <div class="wrap">
+        <div class="lead-cta">
+          <div>
+            <p class="eyebrow">{tenantPage.cta.eyebrow}</p>
+            <h2 id="tenant-cta-title">{tenantPage.cta.title}</h2>
+            <p>{tenantPage.cta.body}</p>
+          </div>
+          <a class="btn-primary" {...viewingLink}>
+            {tenantPage.cta.ctaLabel}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+.tenant-page {
+  background: var(--color-page);
+}
+
+.page-head {
+  padding: 74px 0 58px;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 34px;
+  color: var(--color-text-soft);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+}
+
+.crumbs a {
+  color: var(--color-text);
+  transition: color .2s ease;
+}
+
+.crumbs a:hover {
+  color: var(--color-brand-strong);
+}
+
+.crumbs .sep {
+  width: 22px;
+  height: 1px;
+  background: var(--color-muted-border);
+}
+
+.eyebrow {
+  margin: 0 0 18px;
+  color: var(--color-brand-strong);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.page-head h1 {
+  max-width: 12ch;
+  margin: 0;
+  color: var(--color-heading);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 600;
+  line-height: 1.18;
+}
+
+.page-rule {
+  display: block;
+  width: 84px;
+  height: 3px;
+  margin: 28px 0;
+  background: var(--color-brand);
+}
+
+.page-lede {
+  max-width: var(--container-narrow);
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--text-lg);
+  line-height: 1.9;
+}
+
+.lead-cta-section {
+  padding: 0 0 var(--section-y-lg);
+}
+
+.lead-cta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 32px;
+  padding: 38px 42px;
+  background: var(--color-white);
+  border: 1px solid var(--color-muted-border);
+}
+
+.lead-cta h2 {
+  margin: 0;
+  color: var(--color-heading);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.lead-cta p:last-child {
+  max-width: 620px;
+  margin: 12px 0 0;
+  color: var(--color-text);
+  line-height: 1.8;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 12px 22px;
+  color: var(--color-white);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  background: var(--color-brand);
+  transition: background .2s ease;
+  white-space: nowrap;
+}
+
+.btn-primary:hover {
+  background: var(--color-brand-strong);
+}
+
+@media (max-width: 720px) {
+  .page-head {
+    padding: 48px 0;
+  }
+
+  .page-lede {
+    font-size: var(--text-base);
+  }
+
+  .lead-cta-section {
+    padding-bottom: var(--section-y-mobile);
+  }
+
+  .lead-cta {
+    grid-template-columns: 1fr;
+    padding: 28px 24px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    white-space: normal;
+  }
+}
+</style>

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { fetchPropertyAvailability } from './brand';
+import { fetchPropertyAvailability, sortAvailabilityForDisplay } from './brand';
 
 const availabilityResponse = {
   items: [
@@ -55,6 +55,25 @@ describe('fetchPropertyAvailability', () => {
     );
   });
 
+  it('fails clearly when the API returns invalid JSON', async () => {
+    vi.stubEnv('BRAND_API_BASE_URL', 'https://brand-api.example.test');
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        async json() {
+          throw new SyntaxError('Unexpected token');
+        },
+      }),
+    );
+
+    await expect(fetchPropertyAvailability()).rejects.toThrow(
+      'Public brand API /api/v1/public/properties/availability returned invalid JSON: Unexpected token',
+    );
+  });
+
   it('fails clearly when the response shape is invalid', async () => {
     vi.stubEnv('BRAND_API_BASE_URL', 'https://brand-api.example.test');
     mockFetchJson({
@@ -73,6 +92,39 @@ describe('fetchPropertyAvailability', () => {
     });
 
     await expect(fetchPropertyAvailability()).resolves.toEqual([]);
+  });
+});
+
+describe('sortAvailabilityForDisplay', () => {
+  it('sorts vacant properties first while preserving API order within groups', () => {
+    const occupiedFirst = {
+      property_id: 'property-1',
+      property_public_name: '滿房一',
+      address: '台南市東區測試路 1 號',
+      has_vacant_room: false,
+    };
+    const vacantFirst = {
+      property_id: 'property-2',
+      property_public_name: '可入住一',
+      address: '台南市東區測試路 2 號',
+      has_vacant_room: true,
+    };
+    const occupiedSecond = {
+      property_id: 'property-3',
+      property_public_name: '滿房二',
+      address: '台南市東區測試路 3 號',
+      has_vacant_room: false,
+    };
+    const vacantSecond = {
+      property_id: 'property-4',
+      property_public_name: '可入住二',
+      address: '台南市東區測試路 4 號',
+      has_vacant_room: true,
+    };
+
+    expect(
+      sortAvailabilityForDisplay([occupiedFirst, vacantFirst, occupiedSecond, vacantSecond]),
+    ).toEqual([vacantFirst, vacantSecond, occupiedFirst, occupiedSecond]);
   });
 });
 
