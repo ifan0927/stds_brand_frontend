@@ -3,12 +3,36 @@
   "brandNameEn": "Trust Estate",
   "logo": "/uploads/logos/logo-main-1.png",
   "nav": [
-    { "label": "最新消息", "href": "/news", "external": false },
-    { "label": "關於奕德", "href": "/#about", "external": false },
-    { "label": "我是房客", "href": "/tenant", "external": false },
-    { "label": "我是房東", "href": "/landlord", "external": false },
-    { "label": "預約賞屋", "href": "https://docs.google.com/forms/", "external": true },
-    { "label": "聯絡我們", "href": "/#contact", "external": false }
+    {
+      "label": "最新消息",
+      "href": "/news",
+      "external": false
+    },
+    {
+      "label": "關於奕德",
+      "href": "/#about",
+      "external": false
+    },
+    {
+      "label": "我是房客",
+      "href": "/tenant",
+      "external": false
+    },
+    {
+      "label": "我是房東",
+      "href": "/landlord",
+      "external": false
+    },
+    {
+      "label": "預約賞屋",
+      "href": "https://docs.google.com/forms/",
+      "external": true
+    },
+    {
+      "label": "聯絡我們",
+      "href": "/#contact",
+      "external": false
+    }
   ],
   "contact": {
     "phone": "06-208-1688",
@@ -19,7 +43,7 @@
   "social": {
     "lineUrl": "#",
     "fbUrl": "#",
-    "fbLabel": "不動產何男"
+    "fbLabel": "不動產奕男"
   },
   "forms": {
     "viewingUrl": "https://docs.google.com/forms/",
