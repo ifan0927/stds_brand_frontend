@@ -1,5 +1,13 @@
 import { defineConfig } from 'tinacms';
 
+declare const process: {
+  env: Record<string, string | undefined>;
+};
+
+const tinaBranch = process.env.TINA_BRANCH || process.env.CF_PAGES_BRANCH || 'dev';
+const tinaClientId = process.env.TINA_CLIENT_ID || null;
+const tinaToken = process.env.TINA_TOKEN || null;
+
 const seoFields = [
   { type: 'string', label: 'SEO Title', name: 'seoTitle' },
   {
@@ -45,6 +53,9 @@ const serviceItemFields = [
 ] as const;
 
 export default defineConfig({
+  branch: tinaBranch,
+  clientId: tinaClientId,
+  token: tinaToken,
   build: {
     outputFolder: 'admin',
     publicFolder: 'public',
@@ -57,7 +68,7 @@ export default defineConfig({
     },
   },
   repoProvider: {
-    defaultBranchName: 'dev',
+    defaultBranchName: tinaBranch,
   },
   schema: {
     collections: [
