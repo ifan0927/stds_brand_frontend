@@ -9,7 +9,7 @@
   "listIntro": {
     "eyebrow": "Available Now",
     "title": "出租物件一覽",
-    "lede": "物件列表由 STDS 後端 availability endpoint 於建置時提供，依可入住狀態優先排序。"
+    "lede": ""
   },
   "cta": {
     "eyebrow": "— Book a Viewing",
