@@ -1,0 +1,594 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getNewsCategories, getNewsPosts, formatNewsDate } from '../../lib/content/news';
+import { buildPageMetadata } from '../../lib/seo/site';
+import newsIndexPage from '../../../content/pages/news-index/page.json';
+import siteSettings from '../../../content/site-settings/site.json';
+
+const posts = getNewsPosts();
+const categories = getNewsCategories(posts);
+const [featuredPost, ...rowPosts] = posts;
+const metadata = buildPageMetadata({
+  title: newsIndexPage.seoTitle,
+  description: newsIndexPage.seoDescription,
+  path: '/news',
+  siteName: siteSettings.brandName,
+  ogImagePath: featuredPost?.cover ?? null,
+});
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: newsIndexPage.seoTitle,
+  description: newsIndexPage.seoDescription,
+  url: metadata.canonicalUrl,
+  publisher: {
+    '@type': 'Organization',
+    name: siteSettings.brandName,
+  },
+  blogPost: posts.map((post) => ({
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: formatNewsDate(post.date).iso,
+    author: {
+      '@type': 'Organization',
+      name: post.author,
+    },
+    url: new URL(`/news/${post.slug}`, metadata.canonicalUrl).toString(),
+  })),
+};
+---
+<BaseLayout metadata={metadata} structuredData={structuredData} footerMetaLabel="News & Updates">
+  <main class="news-index-page">
+    <section class="page-head" aria-labelledby="page-title">
+      <div class="wrap">
+        <nav class="crumbs" aria-label="麵包屑">
+          <a href="/">首頁</a>
+          <span class="sep" aria-hidden="true"></span>
+          <span aria-current="page">最新消息</span>
+        </nav>
+        <p class="eyebrow">— {newsIndexPage.head.eyebrow}</p>
+        <h1 id="page-title">{newsIndexPage.head.title}</h1>
+        <span class="page-rule" aria-hidden="true"></span>
+        <p class="page-lede">{newsIndexPage.head.lede}</p>
+      </div>
+    </section>
+
+    <section class="news-section" aria-labelledby="news-list-title">
+      <div class="wrap">
+        <h2 id="news-list-title" class="sr-only">最新消息列表</h2>
+        <div class="news-toolbar">
+          <div class="news-filters" id="news-filters" aria-label="消息分類">
+            <span class="label">分類</span>
+            <button type="button" class="is-active" data-category="">全部</button>
+            {categories.map((category) => (
+              <button type="button" data-category={category}>{category}</button>
+            ))}
+          </div>
+          <p class="meta" id="news-count">共 <em>{posts.length}</em> 則消息</p>
+        </div>
+
+        <div class="news-list" id="news-list">
+          {featuredPost ? (
+            <a class="news-feature news-item" href={`/news/${featuredPost.slug}`} data-category={featuredPost.category}>
+              <span class="news-cover">
+                <span class="featured-tag">Featured</span>
+                <img src={featuredPost.cover} alt={featuredPost.title} width="760" height="570" loading="eager" />
+              </span>
+              <span class="news-body">
+                <span class="news-meta">
+                  <span class="cat">{featuredPost.category}</span>
+                  <span class="sep"></span>
+                  <time datetime={formatNewsDate(featuredPost.date).iso}>{formatNewsDate(featuredPost.date).full}</time>
+                  <span class="sep"></span>
+                  <span>{featuredPost.read_min} min read</span>
+                </span>
+                <span class="feature-title">{featuredPost.title}</span>
+                <span class="news-excerpt">{featuredPost.excerpt}</span>
+                <span class="go">
+                  閱讀全文
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+                </span>
+              </span>
+            </a>
+          ) : (
+            <p class="empty-news" role="status">目前沒有最新消息。</p>
+          )}
+
+          {rowPosts.map((post) => {
+            const date = formatNewsDate(post.date);
+            return (
+              <a class="news-row news-item" href={`/news/${post.slug}`} data-category={post.category}>
+                <span class="date">
+                  <span class="y">{date.year}</span>
+                  <time class="md" datetime={date.iso}>{date.monthDay}</time>
+                </span>
+                <span class="cat-chip">{post.category}</span>
+                <span class="title">{post.title}</span>
+                <span class="excerpt">{post.excerpt}</span>
+                <span class="row-arrow" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+                </span>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+  const filterWrap = document.getElementById('news-filters');
+  const newsCount = document.getElementById('news-count');
+  const newsList = document.getElementById('news-list');
+
+  filterWrap?.addEventListener('click', (event) => {
+    const button = event.target instanceof Element ? event.target.closest('button[data-category]') : null;
+    if (!button || !newsList || !newsCount) return;
+
+    const category = button.getAttribute('data-category') ?? '';
+    filterWrap.querySelectorAll('button[data-category]').forEach((item) => {
+      item.classList.toggle('is-active', item === button);
+    });
+
+    const items = Array.from(newsList.querySelectorAll<HTMLElement>('.news-item'));
+    let visibleCount = 0;
+    items.forEach((item) => {
+      const isVisible = category === '' || item.dataset.category === category;
+      item.hidden = !isVisible;
+      if (isVisible) visibleCount += 1;
+    });
+
+    newsCount.innerHTML = `共 <em>${visibleCount}</em> 則消息`;
+  });
+  </script>
+</BaseLayout>
+
+<style>
+.news-index-page {
+  background: var(--color-white);
+}
+
+.page-head {
+  position: relative;
+  padding: 74px 0 58px;
+  overflow: hidden;
+  background: var(--color-page);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.page-head::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(135deg, rgba(217, 156, 9, .035) 0 1px, transparent 1px 28px);
+  pointer-events: none;
+}
+
+.page-head .wrap {
+  position: relative;
+}
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 34px;
+  color: var(--color-text-soft);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+}
+
+.crumbs a {
+  color: var(--color-text);
+  transition: color .2s ease;
+}
+
+.crumbs a:hover {
+  color: var(--color-brand-strong);
+}
+
+.crumbs .sep {
+  width: 22px;
+  height: 1px;
+  background: var(--color-muted-border);
+}
+
+.eyebrow {
+  margin: 0 0 18px;
+  color: var(--color-brand-strong);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.page-head h1 {
+  max-width: 16ch;
+  margin: 0;
+  color: var(--color-heading);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 600;
+  line-height: 1.18;
+}
+
+.page-rule {
+  display: block;
+  width: 84px;
+  height: 3px;
+  margin: 28px 0;
+  background: var(--color-brand);
+}
+
+.page-lede {
+  max-width: var(--container-narrow);
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--text-lg);
+  line-height: 1.9;
+}
+
+.news-section {
+  padding: var(--section-y-lg) 0;
+  background: var(--color-white);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.news-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--color-heading);
+}
+
+.news-filters {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.news-filters .label,
+.meta {
+  color: var(--color-text-soft);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+}
+
+.news-filters .label {
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+.news-filters button {
+  padding: 8px 16px;
+  color: var(--color-text);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  background: transparent;
+  border: 1px solid var(--color-muted-border);
+  border-radius: 2px;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+
+.news-filters button:hover {
+  color: var(--color-brand-strong);
+  border-color: var(--color-brand);
+}
+
+.news-filters button.is-active {
+  color: var(--color-white);
+  background: var(--color-brand);
+  border-color: var(--color-brand);
+}
+
+.meta {
+  margin: 0;
+}
+
+.meta em {
+  color: var(--color-brand-strong);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.news-list {
+  margin-top: 0;
+}
+
+.news-feature {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  color: var(--color-text);
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-muted-border);
+  transition: background .25s ease;
+}
+
+.news-feature:hover {
+  background: var(--color-page);
+}
+
+.news-cover {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-soft-surface);
+}
+
+.news-cover img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .6s ease;
+}
+
+.news-feature:hover .news-cover img {
+  transform: scale(1.03);
+}
+
+.featured-tag {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1;
+  padding: 7px 14px;
+  color: var(--color-white);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: var(--color-brand);
+  border-radius: 2px;
+}
+
+.news-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  padding: 40px 44px;
+}
+
+.news-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--color-text-soft);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.news-meta .cat {
+  color: var(--color-brand-strong);
+}
+
+.news-meta .sep {
+  width: 14px;
+  height: 1px;
+  background: var(--color-muted-border);
+}
+
+.feature-title {
+  color: var(--color-heading);
+  font-size: clamp(24px, 2.6vw, 32px);
+  font-weight: 500;
+  line-height: 1.35;
+  transition: color .25s ease;
+}
+
+.news-feature:hover .feature-title {
+  color: var(--color-brand-strong);
+}
+
+.news-excerpt {
+  max-width: 42ch;
+  color: var(--color-text);
+  font-size: 15.5px;
+  line-height: 1.75;
+}
+
+.go {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 10px;
+  margin-top: 6px;
+  padding-bottom: 6px;
+  color: var(--color-heading);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  border-bottom: 1px solid var(--color-brand);
+  transition: gap .25s ease, color .25s ease;
+}
+
+.news-feature:hover .go {
+  gap: 14px;
+  color: var(--color-brand-strong);
+}
+
+.news-row {
+  display: grid;
+  grid-template-columns: 120px 110px 1.4fr 1fr 24px;
+  align-items: center;
+  gap: 32px;
+  padding: 26px 12px 26px 4px;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-muted-border);
+  transition: background .25s ease, padding .25s ease;
+}
+
+.news-row:hover {
+  padding-left: 12px;
+  background: var(--color-page);
+}
+
+.date {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  line-height: 1;
+}
+
+.date .y {
+  color: var(--color-text-soft);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.date .md {
+  color: var(--color-heading);
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.cat-chip {
+  justify-self: start;
+  display: inline-flex;
+  padding: 5px 12px;
+  color: var(--color-brand-strong);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  border: 1px solid var(--color-brand);
+  border-radius: 2px;
+}
+
+.title {
+  color: var(--color-heading);
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.45;
+  transition: color .25s ease;
+}
+
+.news-row:hover .title {
+  color: var(--color-brand-strong);
+}
+
+.excerpt {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--color-text-soft);
+  font-size: var(--text-sm);
+  line-height: 1.65;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.row-arrow {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  transition: color .25s ease, transform .25s ease;
+}
+
+.news-row:hover .row-arrow {
+  color: var(--color-brand-strong);
+  transform: translateX(4px);
+}
+
+.empty-news,
+.empty-category {
+  margin: 0;
+  padding: 72px 0;
+  color: var(--color-text-soft);
+  text-align: center;
+  border-bottom: 1px solid var(--color-muted-border);
+}
+
+@media (max-width: 880px) {
+  .news-feature {
+    grid-template-columns: 1fr;
+  }
+
+  .news-body {
+    padding: 30px 24px 34px;
+  }
+
+  .news-row {
+    grid-template-columns: 90px 1fr auto;
+    grid-template-areas:
+      "date cat arrow"
+      "date title title"
+      "date excerpt excerpt";
+    gap: 18px;
+    row-gap: 8px;
+    padding: 22px 4px;
+  }
+
+  .date {
+    grid-area: date;
+    padding-top: 4px;
+  }
+
+  .date .md {
+    font-size: 18px;
+  }
+
+  .cat-chip {
+    grid-area: cat;
+  }
+
+  .title {
+    grid-area: title;
+    font-size: 17px;
+  }
+
+  .excerpt {
+    grid-area: excerpt;
+  }
+
+  .row-arrow {
+    grid-area: arrow;
+    justify-self: end;
+  }
+}
+
+@media (max-width: 720px) {
+  .page-head {
+    padding: 48px 0;
+  }
+
+  .page-lede {
+    font-size: var(--text-base);
+  }
+
+  .news-section {
+    padding: var(--section-y-mobile) 0;
+  }
+}
+</style>
