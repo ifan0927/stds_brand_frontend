@@ -1,0 +1,681 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  formatNewsDate,
+  getNewsNeighbors,
+  getNewsPosts,
+  getRelatedNewsPosts,
+  type NewsPost,
+} from '../../lib/content/news';
+import { buildPageMetadata } from '../../lib/seo/site';
+import siteSettings from '../../../content/site-settings/site.json';
+
+export function getStaticPaths() {
+  return getNewsPosts().map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+type Props = {
+  post: NewsPost;
+};
+
+const { post } = Astro.props;
+const posts = getNewsPosts();
+const date = formatNewsDate(post.date);
+const metadata = buildPageMetadata({
+  title: `${post.title} — ${siteSettings.brandName}`,
+  description: post.excerpt,
+  path: `/news/${post.slug}`,
+  siteName: siteSettings.brandName,
+  ogImagePath: post.cover,
+  ogType: 'article',
+});
+const { previous, next } = getNewsNeighbors(posts, post.slug);
+const relatedPosts = getRelatedNewsPosts(posts, post);
+const articleUrl = metadata.canonicalUrl;
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.title,
+  description: post.excerpt,
+  image: new URL(post.cover, articleUrl).toString(),
+  datePublished: date.iso,
+  dateModified: date.iso,
+  author: {
+    '@type': 'Organization',
+    name: post.author,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: siteSettings.brandName,
+    logo: {
+      '@type': 'ImageObject',
+      url: new URL(siteSettings.logo, articleUrl).toString(),
+    },
+  },
+  mainEntityOfPage: articleUrl,
+};
+---
+<BaseLayout metadata={metadata} structuredData={structuredData} footerMetaLabel="News Article">
+  <main class="news-article-page">
+    <article class="article" aria-labelledby="article-title">
+      <div class="article-wrap">
+        <header class="article-header">
+          <nav class="crumbs" aria-label="麵包屑">
+            <a href="/">首頁</a>
+            <span class="sep" aria-hidden="true"></span>
+            <a href="/news">最新消息</a>
+            <span class="sep" aria-hidden="true"></span>
+            <span aria-current="page">{post.category}</span>
+          </nav>
+
+          <div class="article-meta-top">
+            <span class="cat">{post.category}</span>
+            <time class="date" datetime={date.iso}>{date.full}</time>
+            <span class="sep" aria-hidden="true"></span>
+            <span class="read">{post.read_min} min read</span>
+          </div>
+
+          <h1 class="article-title" id="article-title">{post.title}</h1>
+
+          <div class="article-byline">
+            <span class="author">
+              <span class="avatar" aria-hidden="true">{post.author.slice(0, 1)}</span>
+              <span>{post.author}</span>
+            </span>
+            <span class="spacer"></span>
+            <span class="share">
+              <span>分享</span>
+              <button type="button" id="copy-link" aria-label="複製連結" data-copy-url={articleUrl}>
+                <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                <svg class="icon-done" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
+              </button>
+              <button type="button" id="print-article" aria-label="列印">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"></path></svg>
+              </button>
+            </span>
+          </div>
+        </header>
+
+        <figure class="article-cover">
+          <img src={post.cover} alt={post.title} width="880" height="495" loading="eager" />
+        </figure>
+
+        <div class="article-body">
+          {post.body.map((block) => (
+            block.type === 'heading' ? (
+              <h2>{block.text}</h2>
+            ) : block.type === 'callout' ? (
+              <blockquote>{block.text}</blockquote>
+            ) : (
+              <p class:list={[{ lede: block.type === 'lede' }]}>{block.text}</p>
+            )
+          ))}
+        </div>
+
+        {post.tags.length > 0 && (
+          <div class="article-tags">
+            <span class="label">Tags</span>
+            {post.tags.map((tag) => (
+              <a href="/news">#{tag}</a>
+            ))}
+          </div>
+        )}
+
+        <nav class="article-nav" aria-label="上下篇文章">
+          {previous ? (
+            <a class="prev" href={`/news/${previous.slug}`}>
+              <span class="dir">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M11 5l-7 7 7 7"></path></svg>
+                上一則
+              </span>
+              <span class="t">{previous.title}</span>
+            </a>
+          ) : (
+            <span class="prev disabled">
+              <span class="dir">上一則</span>
+              <span class="t">已是最新</span>
+            </span>
+          )}
+
+          {next ? (
+            <a class="next" href={`/news/${next.slug}`}>
+              <span class="dir">
+                下一則
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+              </span>
+              <span class="t">{next.title}</span>
+            </a>
+          ) : (
+            <span class="next disabled">
+              <span class="dir">下一則</span>
+              <span class="t">已是最舊</span>
+            </span>
+          )}
+        </nav>
+
+        {relatedPosts.length > 0 && (
+          <section class="article-related" aria-labelledby="related-title">
+            <div class="related-head">
+              <div>
+                <p class="eyebrow">— More News</p>
+                <h2 id="related-title">你可能也想看</h2>
+              </div>
+              <a class="more" href="/news">看所有消息 →</a>
+            </div>
+            <div class="related-grid">
+              {relatedPosts.map((related) => {
+                const relatedDate = formatNewsDate(related.date);
+                return (
+                  <a class="related-card" href={`/news/${related.slug}`}>
+                    <span class="cover">
+                      <img src={related.cover} alt={related.title} width="360" height="270" loading="lazy" />
+                    </span>
+                    <span class="related-meta">
+                      <span class="cat">{related.category}</span>
+                      <time datetime={relatedDate.iso}>{relatedDate.full}</time>
+                    </span>
+                    <span class="related-title">{related.title}</span>
+                  </a>
+                );
+              })}
+            </div>
+          </section>
+        )}
+      </div>
+    </article>
+  </main>
+
+  <script>
+  const copyButton = document.getElementById('copy-link');
+  copyButton?.addEventListener('click', async () => {
+    const url = copyButton.getAttribute('data-copy-url') ?? window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      copyButton.classList.add('is-copied');
+      window.setTimeout(() => copyButton.classList.remove('is-copied'), 1500);
+    } catch {
+      copyButton.classList.remove('is-copied');
+    }
+  });
+
+  document.getElementById('print-article')?.addEventListener('click', () => {
+    window.print();
+  });
+  </script>
+</BaseLayout>
+
+<style>
+.news-article-page {
+  background: var(--color-white);
+}
+
+.article {
+  padding: 80px 0 112px;
+}
+
+.article-wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.crumbs {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+  color: var(--color-text-soft);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.crumbs a {
+  color: var(--color-text-soft);
+  transition: color .2s ease;
+}
+
+.crumbs a:hover {
+  color: var(--color-brand-strong);
+}
+
+.crumbs .sep {
+  width: 18px;
+  height: 1px;
+  background: var(--color-muted-border);
+}
+
+.article-meta-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.article-meta-top .cat {
+  padding: 6px 14px;
+  color: var(--color-white);
+  background: var(--color-brand);
+  border-radius: 2px;
+}
+
+.article-meta-top .date,
+.article-meta-top .read {
+  color: var(--color-text-soft);
+}
+
+.article-meta-top .sep {
+  width: 14px;
+  height: 1px;
+  background: var(--color-muted-border);
+}
+
+.article-title {
+  margin: 0 0 28px;
+  color: var(--color-heading);
+  font-size: clamp(30px, 4.2vw, 46px);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.article-byline {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 0;
+  color: var(--color-text-soft);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  border-top: 1px solid var(--color-muted-border);
+  border-bottom: 1px solid var(--color-muted-border);
+}
+
+.author {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-heading);
+  font-weight: 500;
+}
+
+.avatar {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--color-brand);
+  border-radius: 50%;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.share {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+
+.share button {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+  background: var(--color-white);
+  border: 1px solid var(--color-muted-border);
+  border-radius: 50%;
+  transition: border-color .2s ease, color .2s ease;
+}
+
+.share button:hover {
+  color: var(--color-brand-strong);
+  border-color: var(--color-brand);
+}
+
+.icon-done,
+.is-copied .icon-copy {
+  display: none;
+}
+
+.is-copied .icon-done {
+  display: block;
+}
+
+.article-cover {
+  position: relative;
+  margin: 40px 0 48px;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: var(--color-soft-surface);
+}
+
+.article-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.article-body {
+  color: var(--color-text);
+  font-size: 17px;
+  line-height: 1.85;
+}
+
+.article-body .lede {
+  margin: 0 0 36px;
+  padding-left: 20px;
+  color: var(--color-heading);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.7;
+  border-left: 2px solid var(--color-brand);
+}
+
+.article-body h2 {
+  margin: 48px 0 18px;
+  color: var(--color-heading);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.article-body h2::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 12px;
+  vertical-align: middle;
+  background: var(--color-brand);
+  transform: translateY(-3px);
+}
+
+.article-body p {
+  margin: 0 0 22px;
+}
+
+.article-body blockquote {
+  margin: 32px 0;
+  padding: 22px 26px;
+  color: var(--color-heading);
+  font-size: 16px;
+  line-height: 1.7;
+  background: var(--color-page);
+  border-left: 3px solid var(--color-brand);
+}
+
+.article-tags {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--color-muted-border);
+}
+
+.article-tags .label {
+  margin-right: 6px;
+  color: var(--color-text-soft);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
+
+.article-tags a {
+  display: inline-flex;
+  padding: 6px 14px;
+  color: var(--color-text);
+  font-size: 13px;
+  border: 1px solid var(--color-muted-border);
+  border-radius: 2px;
+  transition: border-color .2s ease, color .2s ease;
+}
+
+.article-tags a:hover {
+  color: var(--color-brand-strong);
+  border-color: var(--color-brand);
+}
+
+.article-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 64px;
+  border-top: 1px solid var(--color-heading);
+  border-bottom: 1px solid var(--color-muted-border);
+}
+
+.article-nav a,
+.article-nav .disabled {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 28px 0;
+  color: var(--color-text);
+  border-right: 1px solid var(--color-muted-border);
+  transition: background .25s ease, padding .25s ease;
+}
+
+.article-nav a:last-child,
+.article-nav .disabled:last-child {
+  border-right: 0;
+}
+
+.article-nav a.next,
+.article-nav .next {
+  padding-right: 4px;
+  text-align: right;
+}
+
+.article-nav a.prev,
+.article-nav .prev {
+  padding-left: 4px;
+}
+
+.article-nav a:hover {
+  background: var(--color-page);
+}
+
+.article-nav a.prev:hover {
+  padding-left: 12px;
+}
+
+.article-nav a.next:hover {
+  padding-right: 12px;
+}
+
+.dir {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-brand-strong);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
+
+.next .dir {
+  justify-content: flex-end;
+}
+
+.t {
+  color: var(--color-heading);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.article-nav a:hover .t {
+  color: var(--color-brand-strong);
+}
+
+.disabled {
+  opacity: .4;
+}
+
+.article-related {
+  margin-top: 80px;
+  padding-top: 56px;
+  border-top: 1px solid var(--color-hairline);
+}
+
+.related-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.related-head .eyebrow {
+  margin: 0 0 8px;
+  color: var(--color-brand-strong);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
+
+.related-head h2 {
+  margin: 0;
+  color: var(--color-heading);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+}
+
+.more {
+  padding-bottom: 4px;
+  color: var(--color-heading);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  border-bottom: 1px solid var(--color-brand);
+}
+
+.more:hover {
+  color: var(--color-brand-strong);
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.related-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: var(--color-text);
+}
+
+.related-card .cover {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: var(--color-soft-surface);
+}
+
+.related-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .6s ease;
+}
+
+.related-card:hover img {
+  transform: scale(1.04);
+}
+
+.related-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  color: var(--color-text-soft);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.related-meta .cat {
+  color: var(--color-brand-strong);
+}
+
+.related-title {
+  color: var(--color-heading);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.related-card:hover .related-title {
+  color: var(--color-brand-strong);
+}
+
+@media (max-width: 880px) {
+  .related-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 720px) {
+  .article {
+    padding: 56px 0 80px;
+  }
+
+  .article-byline {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .spacer {
+    display: none;
+  }
+
+  .article-meta-top {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .article-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .article-nav a,
+  .article-nav .disabled {
+    padding: 22px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-muted-border);
+  }
+
+  .article-nav a:last-child,
+  .article-nav .disabled:last-child {
+    border-bottom: 0;
+  }
+}
+</style>
