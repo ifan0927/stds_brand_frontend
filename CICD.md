@@ -68,9 +68,12 @@ tokens, and webhooks must be configured explicitly and must not introduce
 runtime rendering for public pages.
 
 The current TinaCMS foundation builds the admin shell locally with
-`tinacms build --local --skip-cloud-checks` as part of `npm run build`. This
-keeps Cloudflare Pages output static in `dist` and avoids requiring TinaCloud
-credentials before the operator setup is selected.
+`npm run build`. When `TINA_BRANCH`, `TINA_CLIENT_ID`, and `TINA_TOKEN` are set,
+the build generates a TinaCloud-connected admin client while reading the
+repo-backed content snapshot for the static Astro build. When those variables
+are missing, the same command falls back to local Tina mode. Tina local
+indexing is skipped in both modes because this site does not currently depend
+on Tina search indexing during the Cloudflare Pages build.
 
 ## Cloudflare Environment Variables
 
@@ -81,24 +84,25 @@ operator-managed and must not be committed.
 | --- | --- | --- | --- | --- |
 | `BRAND_API_BASE_URL` | Yes | Staging and production builds | `https://example.com` | Core backend public API base URL for property availability. |
 | `SITE_URL` | Yes | Staging and production builds | `https://example.com` | Absolute public origin for canonical and metadata URLs. |
+| `TINA_BRANCH` | Yes for TinaCloud admin | Staging/editor builds | `dev` | Git branch TinaCloud reads and writes. Use `dev` during the current smoke test; switch to `prod` only when the editor workflow is accepted for production. |
+| `TINA_CLIENT_ID` | Yes for TinaCloud admin | Staging/editor builds | TinaCloud client ID from `app.tina.io` | Identifies the managed TinaCloud project for the generated admin client. |
+| `TINA_TOKEN` | Yes for TinaCloud admin | Staging/editor builds | TinaCloud read-only token from `app.tina.io` | Allows the generated admin/client code to read TinaCloud content API metadata. Treat as operator-managed secret. |
 
 `BRAND_API_BASE_URL` must allow build-time fetches for:
 
 - `GET /api/v1/public/properties/availability`
 
-TinaCMS environment variables, if required by the selected TinaCloud setup,
-must be documented when TinaCMS is implemented. Do not commit Tina tokens,
-Cloudflare deploy hook URLs, or other credential material.
-
-No TinaCloud environment variable names are selected in the local-first
-foundation. Add them only when the TinaCloud/editor workflow issue establishes
-the actual setup.
+The selected TinaCloud setup uses TinaCloud as the managed CMS service; no
+self-hosted CMS/admin backend is part of this architecture. TinaCloud is
+currently expected to target `dev` for editor smoke testing. If the accepted
+production workflow later makes TinaCloud the direct production editor,
+`TINA_BRANCH` should be changed to `prod` in the production environment.
 
 `SITE_URL` must be an absolute origin with no path, query, or hash. A trailing
 slash may be normalized by the site code.
 
 Do not commit real environment values, deploy hook URLs, Cloudflare API tokens,
-or private account-specific identifiers.
+Tina tokens, or private account-specific identifiers.
 
 ## Operator Setup Checklist
 
@@ -111,10 +115,11 @@ Repo-side baseline:
 - Set build command to `npm run build`.
 - Set output directory to `dist`.
 - Set `BRAND_API_BASE_URL` and `SITE_URL` for staging.
-- Configure TinaCMS/TinaCloud build-time environment variables only after the
-  selected editor workflow requires them.
+- Configure `TINA_BRANCH=dev`, `TINA_CLIENT_ID`, and `TINA_TOKEN` for the
+  current TinaCloud staging/editor smoke.
 - Later, set separate production values for `BRAND_API_BASE_URL`, `SITE_URL`,
-  and TinaCMS configuration.
+  and TinaCMS configuration if TinaCloud is switched to direct production
+  editing.
 
 Repository gate baseline:
 
@@ -154,7 +159,8 @@ issue. After Cloudflare Pages builds staging from `dev`, verify:
 - `BRAND_API_BASE_URL` is configured as the build-time API base URL for the
   target core backend property availability API.
 - TinaCMS content is present for required site settings, page content, FAQ, and
-  news entries after the Tina integration is implemented.
+  news entries, and the generated `/admin` client can reach the configured
+  TinaCloud project during the editor workflow smoke.
 - Build-time data fetch succeeds against the core backend public availability
   endpoint.
 

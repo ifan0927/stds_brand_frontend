@@ -10,7 +10,7 @@
     "dev:tina": "tinacms dev --noTelemetry -c \"astro dev\"",
     "check": "astro check",
     "test": "vitest run",
-    "build": "tinacms build --local --skip-cloud-checks --noTelemetry -c \"astro build\"",
+    "build": "node scripts/tina-build.mjs",
     "build:astro": "astro build",
     "preview": "astro preview"
   },

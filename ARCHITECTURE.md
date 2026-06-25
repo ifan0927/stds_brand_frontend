@@ -142,9 +142,12 @@ accepted and normalized. Missing or invalid `SITE_URL` should fail the build
 clearly so Cloudflare Pages staging and production do not publish ambiguous
 metadata.
 
-The initial TinaCMS foundation is local-first and does not select TinaCloud
-credential environment variable names. Document those names only when the
-operator/editor workflow is implemented.
+TinaCMS supports both local builds and managed TinaCloud builds. Cloudflare
+Pages should provide `TINA_BRANCH`, `TINA_CLIENT_ID`, and `TINA_TOKEN` when the
+generated `/admin` client must connect to TinaCloud. The current editor smoke
+targets `dev`; production editing can switch `TINA_BRANCH` to `prod` after that
+workflow is accepted. TinaCloud is managed by `app.tina.io`; this repo does not
+self-host a CMS or admin backend.
 
 ## Testing And CI
 

@@ -103,14 +103,18 @@ Astro dev server with Tina available at `/admin/index.html`:
 npm run dev:tina
 ```
 
-Production builds run `tinacms build --local --skip-cloud-checks` before Astro
-so generated admin assets under `public/admin` are copied into the deployable
-`dist/admin` output. Generated Tina files under `tina/__generated__` and
-`public/admin` are build artifacts and are not committed.
+`npm run build` generates Tina admin assets before Astro builds the deployable
+`dist` output. If `TINA_BRANCH`, `TINA_CLIENT_ID`, and `TINA_TOKEN` are set, the
+admin client is built for the managed TinaCloud project while Astro reads the
+repo-backed content snapshot. If those variables are missing, the build falls
+back to local Tina mode. Tina local indexing is skipped in both modes because
+the site does not currently depend on Tina search indexing during builds.
+Generated Tina files under `tina/__generated__` and `public/admin` are build
+artifacts and are not committed.
 
-TinaCloud credentials, editor save workflow, and Cloudflare rebuild behavior are
-operator-managed follow-up work. Do not commit Tina tokens or account-specific
-values.
+TinaCloud is the selected managed CMS service; this repo does not self-host a
+CMS. During the current smoke test, TinaCloud targets `dev`. Do not commit Tina
+tokens, deploy hook URLs, or account-specific values.
 
 ## Engineering Focus
 
