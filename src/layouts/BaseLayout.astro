@@ -1,9 +1,10 @@
 ---
 import type { PageMetadata } from '../lib/seo/site';
+import FloatingSocialLinks from '../components/FloatingSocialLinks.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import siteSettings from '../../content/site-settings/site.json';
-import type { HeaderCtaVariant } from '../lib/site/chrome';
+import { getFloatingSocialLinks, type HeaderCtaVariant } from '../lib/site/chrome';
 
 type Props = {
   metadata: PageMetadata;
@@ -18,6 +19,10 @@ const structuredDataItems = Array.isArray(structuredData)
   : structuredData
     ? [structuredData]
     : [];
+const floatingSocialLinks = getFloatingSocialLinks(siteSettings, {
+  LINE_URL: import.meta.env.LINE_URL,
+  FB_URL: import.meta.env.FB_URL,
+});
 ---
 <!doctype html>
 <html lang="zh-Hant">
@@ -46,6 +51,7 @@ const structuredDataItems = Array.isArray(structuredData)
   </head>
   <body>
     <SiteHeader settings={siteSettings} currentPath={Astro.url.pathname} ctaVariant={headerCtaVariant} />
+    <FloatingSocialLinks lineUrl={floatingSocialLinks.lineUrl} fbUrl={floatingSocialLinks.fbUrl} />
     <slot />
     <SiteFooter settings={siteSettings} metaLabel={footerMetaLabel} />
   </body>

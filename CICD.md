@@ -84,6 +84,8 @@ operator-managed and must not be committed.
 | --- | --- | --- | --- | --- |
 | `BRAND_API_BASE_URL` | Yes | Staging and production builds | `https://example.com` | Core backend public API base URL for property availability. |
 | `SITE_URL` | Yes | Staging and production builds | `https://example.com` | Absolute public origin for canonical and metadata URLs. |
+| `LINE_URL` | No | Staging and production builds | `https://line.me/R/ti/p/@example` | Floating LINE social button URL. Falls back to Tina site settings, then `#`. |
+| `FB_URL` | No | Staging and production builds | `https://www.facebook.com/example` | Floating Facebook social button URL. Falls back to Tina site settings, then `#`. |
 | `TINA_BRANCH` | Yes for TinaCloud admin | Staging/editor builds | `dev` | Git branch TinaCloud reads and writes. Use `dev` during the current smoke test; switch to `prod` only when the editor workflow is accepted for production. |
 | `TINA_CLIENT_ID` | Yes for TinaCloud admin | Staging/editor builds | TinaCloud client ID from `app.tina.io` | Identifies the managed TinaCloud project for the generated admin client. |
 | `TINA_TOKEN` | Yes for TinaCloud admin | Staging/editor builds | TinaCloud read-only token from `app.tina.io` | Allows the generated admin/client code to read TinaCloud content API metadata. Treat as operator-managed secret. |

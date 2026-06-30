@@ -86,6 +86,10 @@ slash is accepted and normalized. Local builds should pass both variables:
 SITE_URL=https://example.com BRAND_API_BASE_URL=http://localhost:8080 npm run build
 ```
 
+Optional `LINE_URL` and `FB_URL` build-time variables control the floating
+social buttons. When they are not set, the site uses Tina site settings and then
+falls back to `#`.
+
 For local CI-equivalent build verification without calling a real backend, run
 the repo-owned public API fixture server in another shell:
 
