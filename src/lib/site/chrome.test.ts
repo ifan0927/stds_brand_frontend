@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   getContactRows,
+  getFloatingSocialLinks,
   getFooterServiceLinks,
   getHeaderCta,
   getLinkAttributes,
@@ -121,5 +122,19 @@ describe('site chrome helpers', () => {
       '我是房東',
       '預約賞屋',
     ]);
+  });
+
+  it('resolves floating social links from env config before site settings', () => {
+    expect(getFloatingSocialLinks(settings, {
+      LINE_URL: 'https://line.me/R/ti/p/@trust-estate',
+      FB_URL: 'https://www.facebook.com/env-page',
+    })).toEqual({
+      lineUrl: 'https://line.me/R/ti/p/@trust-estate',
+      fbUrl: 'https://www.facebook.com/env-page',
+    });
+    expect(getFloatingSocialLinks(settings)).toEqual({
+      lineUrl: '#',
+      fbUrl: 'https://www.facebook.com/trust-estate',
+    });
   });
 });

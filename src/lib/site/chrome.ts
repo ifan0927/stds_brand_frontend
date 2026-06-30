@@ -49,6 +49,16 @@ export type ContactRow = {
   external: boolean;
 };
 
+export type SocialLinkConfig = {
+  LINE_URL?: string | null;
+  FB_URL?: string | null;
+};
+
+export type FloatingSocialLinks = {
+  lineUrl: string;
+  fbUrl: string;
+};
+
 const CONTACT_NAV_LABEL = '聯絡我們';
 
 export function getPrimaryNavItems(settings: SiteSettings): NavItem[] {
@@ -135,6 +145,16 @@ export function getContactRows(settings: SiteSettings): ContactRow[] {
       external: false,
     },
   ];
+}
+
+export function getFloatingSocialLinks(
+  settings: SiteSettings,
+  config: SocialLinkConfig = {},
+): FloatingSocialLinks {
+  return {
+    lineUrl: config.LINE_URL || settings.social.lineUrl || '#',
+    fbUrl: config.FB_URL || settings.social.fbUrl || '#',
+  };
 }
 
 export function getFooterServiceLinks(settings: SiteSettings): NavItem[] {
