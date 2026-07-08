@@ -69,13 +69,13 @@ actions link out to configured external forms.
 
 Public availability data is fetched at Astro build time. Cloudflare Pages should
 provide `BRAND_API_BASE_URL` as the build-time core backend API base URL for
-local, preview, staging, and production builds. Do not hardcode local, staging,
+local, preview, and production builds. Do not hardcode local, preview,
 production, Firebase, or Cloud Run URLs.
 
-Cloudflare Pages staging builds from the GitHub `dev` branch. Production is
-reserved for a separate `prod` branch when production promotion is introduced.
-The build command is `npm run build`, and the deployable output directory is
-`dist`.
+Cloudflare Pages production builds from the GitHub `dev` branch. Feature
+branches can use Cloudflare Pages preview deployments for review before merging
+to `dev`. The build command is `npm run build`, and the deployable output
+directory is `dist`.
 
 `SITE_URL` is also required at build time for canonical URLs and absolute
 metadata. It is non-secret public configuration and must be an absolute origin
@@ -117,7 +117,8 @@ Generated Tina files under `tina/__generated__` and `public/admin` are build
 artifacts and are not committed.
 
 TinaCloud is the selected managed CMS service; this repo does not self-host a
-CMS. During the current smoke test, TinaCloud targets `dev`. Do not commit Tina
+CMS. TinaCloud targets `dev`, matching the GitHub default branch and Cloudflare
+Pages production branch for the current release model. Do not commit Tina
 tokens, deploy hook URLs, or account-specific values.
 
 ## Engineering Focus
@@ -142,7 +143,7 @@ The goal is a small but production-minded public website foundation:
 - [design_handoff_yide_site](design_handoff_yide_site/README.md): current
   multi-page visual handoff and TinaCMS content model; this supersedes the
   earlier single-page visual direction for implementation planning.
-- [CICD.md](CICD.md): branch flow, PR checks, staging smoke, and production
+- [CICD.md](CICD.md): branch flow, PR checks, deployment smoke, and production
   release expectations.
 - [docs/.rules/coding-style.md](docs/.rules/coding-style.md): implementation
   style rules.

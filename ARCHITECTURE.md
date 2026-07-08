@@ -98,11 +98,9 @@ Expected shape:
 
 - Astro builds static assets into a deployable output directory.
 - Cloudflare Pages serves the brand website.
-- Cloudflare Pages staging builds from the GitHub `dev` branch.
-- Cloudflare Pages production builds from a separate `prod` branch when
-  production promotion is introduced.
-- Cloudflare Pages may provide pull-request preview deployments, but they are
-  temporary previews and not the staging environment.
+- Cloudflare Pages production builds from the GitHub `dev` branch.
+- Cloudflare Pages may provide feature-branch preview deployments for review
+  before merging to `dev`.
 - The Astro build reads TinaCMS editorial content from repo-backed content and
   fetches property availability from the configured core backend public API base
   URL.
@@ -123,9 +121,9 @@ Keep cloud deployment assumptions explicit. When adding configuration, document:
 
 - environment variable name
 - whether it is build-time or runtime
-- required environments such as local, staging, and prod
+- required environments such as local, preview, and production
 - safe example value
-- whether it affects local, preview, staging, or production builds
+- whether it affects local, preview, or production builds
 
 Do not rely on hard-coded local URLs, machine-specific paths, or implicit
 defaults that would be unclear in Cloudflare Pages or CI. Public frontend
@@ -139,15 +137,15 @@ availability API.
 absolute metadata URLs. It must be an absolute `http` or `https` origin with no
 path, query, or hash, for example `https://example.com`. A trailing slash is
 accepted and normalized. Missing or invalid `SITE_URL` should fail the build
-clearly so Cloudflare Pages staging and production do not publish ambiguous
+clearly so Cloudflare Pages production and previews do not publish ambiguous
 metadata.
 
 TinaCMS supports both local builds and managed TinaCloud builds. Cloudflare
 Pages should provide `TINA_BRANCH`, `TINA_CLIENT_ID`, and `TINA_TOKEN` when the
-generated `/admin` client must connect to TinaCloud. The current editor smoke
-targets `dev`; production editing can switch `TINA_BRANCH` to `prod` after that
-workflow is accepted. TinaCloud is managed by `app.tina.io`; this repo does not
-self-host a CMS or admin backend.
+generated `/admin` client must connect to TinaCloud. TinaCloud targets `dev`,
+matching the GitHub default branch and Cloudflare Pages production branch for
+the current release model. TinaCloud is managed by `app.tina.io`; this repo does
+not self-host a CMS or admin backend.
 
 ## Testing And CI
 

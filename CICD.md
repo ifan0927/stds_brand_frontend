@@ -8,11 +8,11 @@ static-first, and aligned with `AGENTS.md`, `ARCHITECTURE.md`,
 
 1. Feature work starts from `dev` on a short-lived feature branch.
 2. Feature branches merge back to `dev` through PR review.
-3. Cloudflare Pages staging builds directly from `dev`.
-4. Production builds from a separate `prod` branch. The `prod` branch is not
-   required to exist before the first staging baseline is configured.
-5. Promotion from staging to production is manual and happens by updating the
-   `prod` branch only after staging validation is accepted.
+3. Cloudflare Pages production builds directly from `dev`.
+4. Cloudflare Pages preview deployments build from feature branches when
+   enabled.
+5. TinaCloud editing targets `dev` so editorial content and media stay on the
+   same GitHub default branch.
 
 Do not use the brand frontend pipeline for backend migrations, admin workflow validation, or broad end-to-end coverage.
 
@@ -35,31 +35,21 @@ The first CI version should stay small. Prefer fast checks that protect Astro re
 
 Cloudflare Pages is the deployment target for this repo.
 
-Expected staging setup:
-
-- Branch: `dev`.
-- Environment: Cloudflare Pages staging.
-- Build command: `npm run build`.
-- Output directory: `dist`.
-- Build-time data sources: TinaCMS repo-backed content and the core backend
-  staging property availability API.
-- Content freshness: TinaCMS content commits or backend availability refreshes
-  require a Cloudflare Pages rebuild/redeploy so Astro publishes a fresh static
-  snapshot.
-
 Expected production setup:
 
-- Branch: `prod`.
+- Branch: `dev`.
 - Environment: Cloudflare Pages production.
 - Build command: `npm run build`.
 - Output directory: `dist`.
 - Build-time data sources: TinaCMS repo-backed content and the core backend
   production property availability API.
-- Production promotion is manual and outside the first staging baseline.
+- Content freshness: TinaCMS content commits or backend availability refreshes
+  require a Cloudflare Pages rebuild/redeploy so Astro publishes a fresh static
+  snapshot.
 
-PR preview deployments, if enabled in Cloudflare Pages, are temporary
-per-PR previews. They are separate from the staging environment and are not the
-source of staging smoke evidence.
+Preview deployments, if enabled in Cloudflare Pages, are temporary per-feature
+branch previews. They are separate from production and are used for review
+before merging to `dev`.
 
 No Firebase Hosting brand rewrite, `stds_brand_backend`, brand thin Cloud Run
 service, booking flow, write API, or realtime availability is part of this
@@ -82,23 +72,22 @@ operator-managed and must not be committed.
 
 | Name | Required | Scope | Safe example shape | Used for |
 | --- | --- | --- | --- | --- |
-| `BRAND_API_BASE_URL` | Yes | Staging and production builds | `https://example.com` | Core backend public API base URL for property availability. |
-| `SITE_URL` | Yes | Staging and production builds | `https://example.com` | Absolute public origin for canonical and metadata URLs. |
-| `LINE_URL` | No | Staging and production builds | `https://line.me/R/ti/p/@example` | Floating LINE social button URL. Falls back to Tina site settings, then `#`. |
-| `FB_URL` | No | Staging and production builds | `https://www.facebook.com/example` | Floating Facebook social button URL. Falls back to Tina site settings, then `#`. |
-| `TINA_BRANCH` | Yes for TinaCloud admin | Staging/editor builds | `dev` | Git branch TinaCloud reads and writes. Use `dev` during the current smoke test; switch to `prod` only when the editor workflow is accepted for production. |
-| `TINA_CLIENT_ID` | Yes for TinaCloud admin | Staging/editor builds | TinaCloud client ID from `app.tina.io` | Identifies the managed TinaCloud project for the generated admin client. |
-| `TINA_TOKEN` | Yes for TinaCloud admin | Staging/editor builds | TinaCloud read-only token from `app.tina.io` | Allows the generated admin/client code to read TinaCloud content API metadata. Treat as operator-managed secret. |
+| `BRAND_API_BASE_URL` | Yes | Production and preview builds | `https://example.com` | Core backend public API base URL for property availability. |
+| `SITE_URL` | Yes | Production and preview builds | `https://example.com` | Absolute public origin for canonical and metadata URLs. |
+| `LINE_URL` | No | Production and preview builds | `https://line.me/R/ti/p/@example` | Floating LINE social button URL. Falls back to Tina site settings, then `#`. |
+| `FB_URL` | No | Production and preview builds | `https://www.facebook.com/example` | Floating Facebook social button URL. Falls back to Tina site settings, then `#`. |
+| `TINA_BRANCH` | Yes for TinaCloud admin | Production/editor builds | `dev` | Git branch TinaCloud reads and writes. Keep this on `dev` so TinaCloud media and content stay aligned with the GitHub default branch. |
+| `TINA_CLIENT_ID` | Yes for TinaCloud admin | Production/editor builds | TinaCloud client ID from `app.tina.io` | Identifies the managed TinaCloud project for the generated admin client. |
+| `TINA_TOKEN` | Yes for TinaCloud admin | Production/editor builds | TinaCloud read-only token from `app.tina.io` | Allows the generated admin/client code to read TinaCloud content API metadata. Treat as operator-managed secret. |
 
 `BRAND_API_BASE_URL` must allow build-time fetches for:
 
 - `GET /api/v1/public/properties/availability`
 
 The selected TinaCloud setup uses TinaCloud as the managed CMS service; no
-self-hosted CMS/admin backend is part of this architecture. TinaCloud is
-currently expected to target `dev` for editor smoke testing. If the accepted
-production workflow later makes TinaCloud the direct production editor,
-`TINA_BRANCH` should be changed to `prod` in the production environment.
+self-hosted CMS/admin backend is part of this architecture. TinaCloud targets
+`dev`, matching the GitHub default branch and Cloudflare Pages production
+branch for the current release model.
 
 `SITE_URL` must be an absolute origin with no path, query, or hash. A trailing
 slash may be normalized by the site code.
@@ -111,17 +100,13 @@ Tina tokens, or private account-specific identifiers.
 Repo-side baseline:
 
 - Confirm GitHub default branch is `dev`.
-- Configure Cloudflare Pages staging to build from `dev`.
-- Configure Cloudflare Pages production to build from `prod` when production is
-  introduced.
+- Configure Cloudflare Pages production to build from `dev`.
+- Configure Cloudflare Pages preview deployments for feature branches.
 - Set build command to `npm run build`.
 - Set output directory to `dist`.
-- Set `BRAND_API_BASE_URL` and `SITE_URL` for staging.
+- Set production `BRAND_API_BASE_URL` and `SITE_URL`.
 - Configure `TINA_BRANCH=dev`, `TINA_CLIENT_ID`, and `TINA_TOKEN` for the
-  current TinaCloud staging/editor smoke.
-- Later, set separate production values for `BRAND_API_BASE_URL`, `SITE_URL`,
-  and TinaCMS configuration if TinaCloud is switched to direct production
-  editing.
+  TinaCloud editor.
 
 Repository gate baseline:
 
@@ -130,7 +115,7 @@ Repository gate baseline:
 - Require `PR CI / verify` before merge.
 - Prevent force pushes to protected branches.
 - Decide separately whether approvals, stale-review dismissal, linear history,
-  or production-specific rules are needed.
+  or additional production safeguards are needed.
 
 Branch protection, rulesets, required checks, Cloudflare project settings, and
 Cloudflare environment variables are operator-managed. This document describes
@@ -148,10 +133,11 @@ local builds on Node 22+.
 upgrade path when one is available. Runtime Astro advisories should be handled
 through normal Astro upgrades.
 
-## Staging Smoke
+## Deployment Smoke
 
-Actual first staging deployment validation belongs to a follow-up smoke/evidence
-issue. After Cloudflare Pages builds staging from `dev`, verify:
+Actual first production deployment validation belongs to a follow-up
+smoke/evidence issue. After Cloudflare Pages builds production from `dev`,
+verify:
 
 - Public pages load successfully at their expected URLs.
 - Core SEO metadata is present: page title, description, canonical URL when applicable, and Open Graph tags.
@@ -173,9 +159,9 @@ Backend API smoke should cover:
 Use the core backend `/health` only as an environment sanity check; it is not a
 substitute for the public availability endpoint check.
 
-Future non-secret staging evidence should record:
+Future non-secret deployment evidence should record:
 
-- Staging URL.
+- Production URL.
 - Branch and commit SHA.
 - Cloudflare Pages deployment or build identifier when available.
 - Build command and output directory.
@@ -191,16 +177,17 @@ actual Cloudflare credential material.
 
 ## Production Release
 
-Production releases are manual and approved. Promote only after:
+Production releases are currently triggered by updates to `dev`. Merge to `dev`
+only after:
 
 - PR checks passed before merge.
-- Staging page-load and SEO smoke passed.
-- Staging static asset checks passed.
-- Staging Cloudflare Pages environment-variable configuration matched the
+- Preview page-load and SEO smoke passed when the change needs visual review.
+- Preview static asset checks passed when the change needs visual review.
+- Cloudflare Pages environment-variable configuration matched the
   documented release assumptions.
-- Staging TinaCMS content smoke passed, when applicable.
-- Staging build-time API smoke passed for the public availability endpoint.
-- The release owner confirms the production change window and rollback path.
+- TinaCMS content smoke passed, when applicable.
+- Build-time API smoke passed for the public availability endpoint.
+- The release owner confirms rollback expectations for the `dev` deployment.
 
 ## Initial Non-Goals
 
